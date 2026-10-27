@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Gestión - Vilma Vestidos</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+
+  <!-- Header / Navbar -->
+  <header class="bg-purple-900 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <i data-lucide="scissors" class="w-8 h-8 text-pink-400"></i>
+        <div>
+          <h1 class="text-xl font-bold tracking-wide">VILMA VESTIDOS</h1>
+          <p class="text-xs text-purple-200">Gestión de Alquileres, Ventas y Finanzas</p>
+        </div>
+      </div>
+      <!-- Navegación por pestañas -->
+      <nav class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+        <button onclick="switchTab('registro')" id="tab-registro" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-700 text-white flex items-center gap-1">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i> Registrar
+        </button>
+        <button onclick="switchTab('inventario')" id="tab-inventario" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-800 text-purple-100 flex items-center gap-1">
+          <i data-lucide="box" class="w-4 h-4"></i> Stock & Excel
+        </button>
+        <button onclick="switchTab('agenda')" id="tab-agenda" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-800 text-purple-100 flex items-center gap-1">
+          <i data-lucide="calendar" class="w-4 h-4"></i> Agenda
+        </button>
+        <button onclick="switchTab('cobros')" id="tab-cobros" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-800 text-purple-100 flex items-center gap-1">
+          <i data-lucide="dollar-sign" class="w-4 h-4"></i> Cobros & Caja
+        </button>
+        <button onclick="switchTab('historial')" id="tab-historial" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-800 text-purple-100 flex items-center gap-1">
+          <i data-lucide="receipt" class="w-4 h-4"></i> Alquileres / Ventas
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-4 md:p-6">
+
+    <!-- SECCIÓN 1: REGISTRO DE ALQUILER O VENTA Y FICHA CLIENTE -->
+    <section id="sec-registro" class="space-y-6">
+      <div class="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+        <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <i data-lucide="user-check" class="text-purple-600"></i> Registrar Nueva Operación y Ficha de Clienta
+        </h2>
+
+        <!-- Ficha Cliente -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-purple-50/50 p-4 rounded-xl border border-purple-100">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Nombre Completo *</label>
+            <input type="text" id="reg-clienta" placeholder="Ej: María Gómez" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">DNI / Cédula *</label>
+            <input type="text" id="reg-dni" placeholder="Ej: 35123456" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Teléfono / WhatsApp *</label>
+            <input type="text" id="reg-telefono" placeholder="Ej: 3804123456" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Fecha del Evento *</label>
+            <input type="date" id="reg-fecha-evento" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Domicilio Completo</label>
+            <input type="text" id="reg-domicilio" placeholder="Ej: Av. San Martín 450" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Email de Contacto</label>
+            <input type="email" id="reg-email" placeholder="maria@gmail.com" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+          </div>
+        </div>
+
+        <!-- Buscador e Selección de Prendas -->
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
+          <h3 class="text-sm font-semibold text-purple-900 mb-2 flex items-center gap-1">
+            <i data-lucide="search" class="w-4 h-4"></i> Buscar y Añadir Vestidos / Accesorios
+          </h3>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="text" id="buscar-codigo" placeholder="Escribe código (ej: ALQ-15A-01, VEN-NOV-02) o modelo..." class="flex-1 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+            <button onclick="agregarProductoAOrden()" class="bg-purple-700 hover:bg-purple-800 text-white px-5 py-2.5 rounded-lg font-medium text-sm transition flex items-center justify-center gap-1">
+              <i data-lucide="shopping-cart" class="w-4 h-4"></i> Añadir a la Orden
+            </button>
+          </div>
+        </div>
+
+        <!-- Detalle de la Orden -->
+        <div class="mb-6 overflow-x-auto border border-gray-200 rounded-lg">
+          <table class="w-full text-sm text-left text-gray-600">
+            <thead class="bg-gray-100 text-xs text-gray-700 uppercase">
+              <tr>
+                <th class="p-3">Foto / Código</th>
+                <th class="p-3">Producto / Modelo</th>
+                <th class="p-3">Medidas (B/C/C/L)</th>
+                <th class="p-3">Modalidad</th>
+                <th class="p-3">Precio Lista</th>
+                <th class="p-3 text-center">Quitar</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-orden-items">
+              <tr>
+                <td colspan="6" class="p-4 text-center text-gray-400 italic">No hay productos seleccionados. Usa el buscador de arriba.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Observaciones / Arreglos Modistería -->
+        <div class="mb-6">
+          <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Ajustes de Modistería / Observaciones del Pedido</label>
+          <textarea id="reg-observaciones" rows="2" placeholder="Ej: Ajustar bretel 2cm, dobladillo para taco 8cm..." class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-purple-500 outline-none"></textarea>
+        </div>
+
+        <!-- Descuentos, Recargos y Pago -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-5 rounded-xl border border-gray-200">
+          <div class="space-y-4">
+            <h4 class="font-bold text-gray-800 text-sm flex items-center gap-1">
+              <i data-lucide="percent" class="w-4 h-4 text-purple-600"></i> Descuento o Recargo
+            </h4>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">Tipo de Ajuste</label>
+                <select id="tipo-ajuste" onchange="calcularTotales()" class="w-full border border-gray-300 rounded-lg p-2 text-sm">
+                  <option value="ninguno">Sin Ajuste</option>
+                  <option value="descuento-monto">Descuento ($)</option>
+                  <option value="descuento-porcentaje">Descuento (%)</option>
+                  <option value="recargo-monto">Recargo ($)</option>
+                  <option value="recargo-porcentaje">Recargo (%)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">Valor</label>
+                <input type="number" id="valor-ajuste" value="0" min="0" oninput="calcularTotales()" class="w-full border border-gray-300 rounded-lg p-2 text-sm">
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-gray-200">
+              <h4 class="font-bold text-gray-800 text-sm mb-2 flex items-center gap-1">
+                <i data-lucide="wallet" class="w-4 h-4 text-green-600"></i> Entrega Inicial / Seña
+              </h4>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs text-gray-600 mb-1">Monto Abonado ($)</label>
+                  <input type="number" id="monto-pago-inicial" value="0" min="0" oninput="calcularTotales()" class="w-full border border-gray-300 rounded-lg p-2 text-sm font-bold text-green-700">
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-600 mb-1">Medio de Pago</label>
+                  <select id="medio-pago-inicial" class="w-full border border-gray-300 rounded-lg p-2 text-sm">
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Transferencia">Transferencia</option>
+                    <option value="Tarjeta">Tarjeta</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col justify-between bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between text-gray-600"><span>Subtotal:</span><span id="resumen-subtotal">$0</span></div>
+              <div class="flex justify-between text-gray-600"><span>Ajuste:</span><span id="resumen-ajuste">$0</span></div>
+              <div class="flex justify-between text-base font-bold text-gray-800 pt-2 border-t border-gray-100"><span>Total Operación:</span><span id="resumen-total">$0</span></div>
+              <div class="flex justify-between text-green-600 font-medium"><span>Seña / Abonado:</span><span id="resumen-abonado">$0</span></div>
+              <div class="flex justify-between text-red-600 font-bold text-lg pt-2 border-t border-gray-200"><span>Saldo Pendiente:</span><span id="resumen-saldo">$0</span></div>
+            </div>
+
+            <button onclick="guardarOperacion()" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition shadow flex items-center justify-center gap-2">
+              <i data-lucide="check-circle" class="w-5 h-5"></i> Registrar Operación y Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: INVENTARIO, MEDIDAS E IMPORTADOR DE EXCEL -->
+    <section id="sec-inventario" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+        <div>
+          <h2 class="text-lg font-bold text-gray-800">Inventario de Stock y Guía de Talles</h2>
+          <p class="text-xs text-gray-500">Gestión de Prendas con Fotos, Medidas (cm), Precios e Importación Masiva</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <input type="file" id="input-excel" accept=".csv" class="hidden" onchange="procesarExcelCSV(event)">
+          <button onclick="document.getElementById('input-excel').click()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-lg font-semibold text-xs transition flex items-center gap-1">
+            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Cargar Stock desde Excel (CSV)
+          </button>
+          <button onclick="abrirModalNuevoProducto()" class="bg-purple-700 hover:bg-purple-800 text-white px-3 py-2 rounded-lg font-semibold text-xs transition flex items-center gap-1">
+            <i data-lucide="plus" class="w-4 h-4"></i> Cargar Vestido Manual
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left text-gray-600">
+            <thead class="bg-purple-900 text-white text-xs uppercase">
+              <tr>
+                <th class="p-3">Foto / Código</th>
+                <th class="p-3">Nombre / Modelo</th>
+                <th class="p-3">Guía de Talles / Medidas (cm)</th>
+                <th class="p-3">Modalidad</th>
+                <th class="p-3">P. Venta</th>
+                <th class="p-3">P. Alquiler</th>
+                <th class="p-3">Estado Limpieza</th>
+                <th class="p-3 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-stock-body" class="divide-y divide-gray-200">
+              <!-- JS Populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: AGENDA Y CALENDARIO DE EVENTOS -->
+    <section id="sec-agenda" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+          <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <i data-lucide="calendar" class="text-purple-600"></i> Calendario de Eventos
+          </h2>
+          <label class="block text-xs font-semibold text-gray-600 uppercase mb-2">Seleccionar Fecha:</label>
+          <input type="date" id="filtro-fecha-agenda" onchange="actualizarAgendaDetalle()" class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-purple-500 mb-4">
+          
+          <div class="bg-purple-50 p-4 rounded-lg border border-purple-200 text-center">
+            <span class="text-xs text-purple-700 font-semibold block">ALQUILERES / ENTREGAS DEL DÍA</span>
+            <span id="agenda-contador-dia" class="text-4xl font-black text-purple-900">0</span>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+          <h3 class="text-base font-bold text-gray-800 mb-3" id="agenda-titulo-fecha">Detalle de Alquileres</h3>
+          <div id="agenda-lista-eventos" class="space-y-4"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: PESTAÑA DE COBROS, GASTOS Y TESORERÍA -->
+    <section id="sec-cobros" class="hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-green-500">
+          <span class="text-xs text-gray-500 font-semibold uppercase">Total Ingresos</span>
+          <h3 id="caja-total-ingresos" class="text-2xl font-bold text-green-700">$0</h3>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-red-500">
+          <span class="text-xs text-gray-500 font-semibold uppercase">Total Gastos / Egresos</span>
+          <h3 id="caja-total-egresos" class="text-2xl font-bold text-red-600">$0</h3>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-purple-500">
+          <span class="text-xs text-gray-500 font-semibold uppercase">Ganancia Neta</span>
+          <h3 id="caja-ganancia-neta" class="text-2xl font-bold text-purple-900">$0</h3>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-blue-500">
+          <span class="text-xs text-gray-500 font-semibold uppercase">Desglose Medios</span>
+          <div class="text-xs space-y-1 mt-1 text-gray-600">
+            <div>Ef: <span id="caja-efectivo" class="font-bold text-gray-800">$0</span></div>
+            <div>Transf: <span id="caja-transf" class="font-bold text-gray-800">$0</span></div>
+            <div>Tarj: <span id="caja-tarjeta" class="font-bold text-gray-800">$0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+          <h3 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <i data-lucide="minus-circle" class="text-red-500"></i> Registrar Gasto / Egreso
+          </h3>
+          <div class="space-y-3 text-sm">
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-1">Concepto / Detalle</label>
+              <input type="text" id="gasto-concepto" placeholder="Ej: Luz, Tintorería, Hilos" class="w-full border p-2 rounded-lg">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-1">Tipo de Gasto</label>
+              <select id="gasto-tipo" class="w-full border p-2 rounded-lg">
+                <option value="Fijo">Gasto Fijo (Alquiler, Luz, Impuestos)</option>
+                <option value="Variable">Gasto Variable (Tintorería, Arreglos)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-1">Monto ($)</label>
+              <input type="number" id="gasto-monto" placeholder="0.00" class="w-full border p-2 rounded-lg font-bold text-red-600">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-1">Medio de Pago</label>
+              <select id="gasto-medio" class="w-full border p-2 rounded-lg">
+                <option value="Efectivo">Efectivo</option>
+                <option value="Transferencia">Transferencia</option>
+                <option value="Tarjeta">Tarjeta</option>
+              </select>
+            </div>
+            <button onclick="guardarGasto()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg transition text-xs flex items-center justify-center gap-1">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i> Guardar Gasto
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200 space-y-4">
+          <div class="flex justify-between items-center border-b pb-3">
+            <h3 class="text-base font-bold text-gray-800">Flujo de Caja y Facturación</h3>
+            <select id="filtro-caja-tipo" onchange="renderCajaMovimientos()" class="border rounded p-1 text-xs">
+              <option value="todos">Todos los Movimientos</option>
+              <option value="ingreso">Solo Ingresos</option>
+              <option value="egreso">Solo Gastos</option>
+            </select>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-600">
+              <thead class="bg-gray-100 text-xs uppercase text-gray-700">
+                <tr>
+                  <th class="p-2.5">Fecha</th>
+                  <th class="p-2.5">Tipo</th>
+                  <th class="p-2.5">Concepto / Clienta</th>
+                  <th class="p-2.5">Medio</th>
+                  <th class="p-2.5">Monto</th>
+                  <th class="p-2.5 text-center">Facturar</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-caja-body" class="divide-y divide-gray-200"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 5: HISTORIAL -->
+    <section id="sec-historial" class="hidden space-y-6">
+      <div class="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+        <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <i data-lucide="receipt" class="text-purple-600"></i> Historial de Operaciones
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left text-gray-600">
+            <thead class="bg-gray-800 text-white text-xs uppercase">
+              <tr>
+                <th class="p-3">ID / Fecha</th>
+                <th class="p-3">Clienta & DNI</th>
+                <th class="p-3">Fecha Evento</th>
+                <th class="p-3">Productos</th>
+                <th class="p-3">Total</th>
+                <th class="p-3">Abonado</th>
+                <th class="p-3">Saldo</th>
+                <th class="p-3 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-historial-body" class="divide-y divide-gray-200"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: Cargar Producto -->
+  <div id="modal-producto" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-lg font-bold text-gray-800">Cargar Vestido con Guía de Talles</h3>
+        <button onclick="cerrarModalProducto()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 text-sm">
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Código Único *</label>
+          <input type="text" id="prod-codigo" placeholder="Ej: ALQ-15A-01" class="w-full border p-2 rounded-lg">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Nombre / Modelo *</label>
+          <input type="text" id="prod-nombre" placeholder="Ej: Vestido Gala Sateen Rojo" class="w-full border p-2 rounded-lg">
+        </div>
+
+        <div class="col-span-2">
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Link / URL de Foto del Vestido</label>
+          <input type="text" id="prod-foto" placeholder="https://ejemplo.com/foto.jpg" class="w-full border p-2 rounded-lg">
+        </div>
+
+        <div class="col-span-2 bg-purple-50 p-3 rounded-lg border border-purple-200 grid grid-cols-4 gap-2">
+          <div class="col-span-4 text-xs font-bold text-purple-900 border-b border-purple-200 pb-1 mb-1">📏 GUÍA DE TALLES Y MEDIDAS (cm)</div>
+          <div><label class="block text-[10px] uppercase">Talle</label><input type="text" id="prod-talle" placeholder="S, M" class="w-full border p-1.5 rounded text-xs"></div>
+          <div><label class="block text-[10px] uppercase">Busto (cm)</label><input type="number" id="prod-busto" placeholder="90" class="w-full border p-1.5 rounded text-xs"></div>
+          <div><label class="block text-[10px] uppercase">Cintura (cm)</label><input type="number" id="prod-cintura" placeholder="70" class="w-full border p-1.5 rounded text-xs"></div>
+          <div><label class="block text-[10px] uppercase">Cadera (cm)</label><input type="number" id="prod-cadera" placeholder="95" class="w-full border p-1.5 rounded text-xs"></div>
+          <div class="col-span-4"><label class="block text-[10px] uppercase">Largo de prenda / Talle Específico</label><input type="text" id="prod-largo" placeholder="Largo 145 cm" class="w-full border p-1.5 rounded text-xs"></div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Categoría</label>
+          <select id="prod-categoria" class="w-full border p-2 rounded-lg">
+            <option value="15 Años">15 Años</option>
+            <option value="Novia">Novia</option>
+            <option value="Fiesta Largo">Fiesta Largo</option>
+            <option value="Fiesta Corto">Fiesta Corto</option>
+            <option value="Accesorio">Accesorio (Velo/Cartera)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Modalidad Inicial</label>
+          <select id="prod-modalidad" class="w-full border p-2 rounded-lg">
+            <option value="Alquiler">Para Alquiler</option>
+            <option value="Venta">A la Venta</option>
+          </select>
+        </div>
+        <div><label class="block text-xs font-semibold text-gray-600 mb-1">Precio Venta ($)</label><input type="number" id="prod-precio-venta" placeholder="0.00" class="w-full border p-2 rounded-lg"></div>
+        <div><label class="block text-xs font-semibold text-gray-600 mb-1">Precio Alquiler ($)</label><input type="number" id="prod-precio-alquiler" placeholder="0.00" class="w-full border p-2 rounded-lg"></div>
+        <div class="col-span-2">
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Estado de Limpieza</label>
+          <select id="prod-estado-limpieza" class="w-full border p-2 rounded-lg">
+            <option value="Disponible / Limpio">🟢 Disponible / Limpio</option>
+            <option value="En Tintorería">🟡 En Tintorería / Lavado</option>
+            <option value="Ingresó al Salón">🔵 Ingresó al Salón (Revisión)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-2 pt-3 border-t">
+        <button onclick="cerrarModalProducto()" class="px-4 py-2 border rounded-lg text-sm text-gray-600">Cancelar</button>
+        <button onclick="guardarProducto()" class="px-4 py-2 bg-purple-700 text-white rounded-lg text-sm font-semibold hover:bg-purple-800">Guardar Vestido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Cobro de Saldo -->
+  <div id="modal-pago" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-lg font-bold text-gray-800">Cobrar Saldo / Entrega</h3>
+        <button onclick="cerrarModalPago()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x"></i></button>
+      </div>
+
+      <input type="hidden" id="pago-op-id">
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Monto Abonado ($)</label>
+          <input type="number" id="pago-monto" placeholder="Ej: 8000" class="w-full border p-2.5 rounded-lg text-lg font-bold text-green-700">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Medio de Pago</label>
+          <select id="pago-medio" class="w-full border p-2.5 rounded-lg">
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
+            <option value="Tarjeta">Tarjeta</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-2 pt-3 border-t">
+        <button onclick="cerrarModalPago()" class="px-4 py-2 border rounded-lg text-sm text-gray-600">Cancelar</button>
+        <button onclick="guardarPagoCuota()" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700">Registrar Cobro</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    let dbProductos = JSON.parse(localStorage.getItem('vilma_v3_productos')) || [
+      { id: 1, codigo: 'ALQ-15A-01', nombre: 'Vestido Gala Rojo Sateen', foto: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=150&auto=format&fit=crop', talle: 'M', busto: 90, cintura: 70, cadera: 98, largo: '145 cm', categoria: '15 Años', modalidad: 'Alquiler', precioVenta: 120000, precioAlquiler: 35000, estadoLimpieza: 'Disponible / Limpio' },
+      { id: 2, codigo: 'VEN-NOV-01', nombre: 'Novia Corte Sirena Encaje', foto: 'https://images.unsplash.com/photo-1594552072238-b8a33785b261?w=150&auto=format&fit=crop', talle: 'S', busto: 85, cintura: 65, cadera: 92, largo: '150 cm', categoria: 'Novia', modalidad: 'Venta', precioVenta: 280000, precioAlquiler: 90000, estadoLimpieza: 'Disponible / Limpio' }
+    ];
+
+    let dbOperaciones = JSON.parse(localStorage.getItem('vilma_v3_operaciones')) || [];
+    let dbGastos = JSON.parse(localStorage.getItem('vilma_v3_gastos')) || [];
+    let itemsOrdenActual = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      renderTablaStock();
+      renderHistorial();
+      renderCajaMovimientos();
+      const hoy = new Date().toISOString().split('T')[0];
+      document.getElementById('filtro-fecha-agenda').value = hoy;
+      actualizarAgendaDetalle();
+    });
+
+    function guardarDB() {
+      localStorage.setItem('vilma_v3_productos', JSON.stringify(dbProductos));
+      localStorage.setItem('vilma_v3_operaciones', JSON.stringify(dbOperaciones));
+      localStorage.setItem('vilma_v3_gastos', JSON.stringify(dbGastos));
+    }
+
+    function switchTab(tab) {
+      ['registro', 'inventario', 'agenda', 'cobros', 'historial'].forEach(t => {
+        document.getElementById(`sec-${t}`).classList.add('hidden');
+        document.getElementById(`tab-${t}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-800 text-purple-100 flex items-center gap-1";
+      });
+      document.getElementById(`sec-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-700 text-white flex items-center gap-1";
+      lucide.createIcons();
+    }
+
+    // --- IMPORTAR DESDE EXCEL / CSV ---
+    function procesarExcelCSV(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const lineas = evt.target.result.split('\n');
+        let agregados = 0;
+
+        for (let i = 1; i < lineas.length; i++) {
+          const col = lineas[i].split(',');
+          if (col.length >= 2 && col[0].trim() !== '') {
+            dbProductos.push({
+              id: Date.now() + i,
+              codigo: col[0].trim().toUpperCase(),
+              nombre: col[1].trim(),
+              categoria: col[2] ? col[2].trim() : 'Fiesta Largo',
+              modalidad: col[3] ? col[3].trim() : 'Alquiler',
+              precioVenta: parseFloat(col[4]) || 0,
+              precioAlquiler: parseFloat(col[5]) || 0,
+              talle: col[6] ? col[6].trim() : 'M',
+              busto: parseFloat(col[7]) || null,
+              cintura: parseFloat(col[8]) || null,
+              cadera: parseFloat(col[9]) || null,
+              largo: col[10] ? col[10].trim() : '',
+              estadoLimpieza: 'Disponible / Limpio'
+            });
+            agregados++;
+          }
+        }
+        guardarDB();
+        renderTablaStock();
+        alert(`¡Listo! Se importaron ${agregados} prendas desde tu archivo Excel/CSV.`);
+      };
+      reader.readAsText(file);
+    }
+
+    // --- REGISTRO ORDEN ---
+    function agregarProductoAOrden() {
+      const busqueda = document.getElementById('buscar-codigo').value.trim().toLowerCase();
+      if (!busqueda) return alert('Ingresa un código o nombre.');
+
+      const producto = dbProductos.find(p => p.codigo.toLowerCase() === busqueda || p.nombre.toLowerCase().includes(busqueda));
+      if (!producto) return alert('Producto no encontrado.');
+
+      itemsOrdenActual.push({ ...producto, precio: producto.modalidad === 'Venta' ? producto.precioVenta : producto.precioAlquiler });
+      document.getElementById('buscar-codigo').value = '';
+      renderTablaOrden();
+      calcularTotales();
+    }
+
+    function removerItemOrden(idx) {
+      itemsOrdenActual.splice(idx, 1);
+      renderTablaOrden();
+      calcularTotales();
+    }
+
+    function renderTablaOrden() {
+      const tbody = document.getElementById('tabla-orden-items');
+      if (itemsOrdenActual.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400 italic">No hay productos seleccionados.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = itemsOrdenActual.map((item, idx) => `
+        <tr class="border-b">
+          <td class="p-2 flex items-center gap-2">
+            ${item.foto ? `<img src="${item.foto}" class="w-8 h-8 rounded object-cover border">` : ''}
+            <span class="font-bold text-purple-900">${item.codigo}</span>
+          </td>
+          <td class="p-2 font-medium">${item.nombre}</td>
+          <td class="p-2 text-xs text-gray-500">Talle ${item.talle || '-'} (B:${item.busto || '-'}, C:${item.cintura || '-'}, Cd:${item.cadera || '-'})</td>
+          <td class="p-2"><span class="px-2 py-0.5 rounded text-xs ${item.modalidad === 'Venta' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">${item.modalidad}</span></td>
+          <td class="p-2 font-bold">$${item.precio.toLocaleString()}</td>
+          <td class="p-2 text-center"><button onclick="removerItemOrden(${idx})" class="text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function calcularTotales() {
+      const subtotal = itemsOrdenActual.reduce((s, i) => s + i.precio, 0);
+      const tipo = document.getElementById('tipo-ajuste').value;
+      const valor = parseFloat(document.getElementById('valor-ajuste').value) || 0;
+      const inicial = parseFloat(document.getElementById('monto-pago-inicial').value) || 0;
+
+      let ajuste = 0;
+      if (tipo === 'descuento-monto') ajuste = -valor;
+      else if (tipo === 'descuento-porcentaje') ajuste = -(subtotal * (valor / 100));
+      else if (tipo === 'recargo-monto') ajuste = valor;
+      else if (tipo === 'recargo-porcentaje') ajuste = subtotal * (valor / 100);
+
+      const total = Math.max(0, subtotal + ajuste);
+      const saldo = Math.max(0, total - inicial);
+
+      document.getElementById('resumen-subtotal').innerText = `$${subtotal.toLocaleString()}`;
+      document.getElementById('resumen-ajuste').innerText = `$${ajuste.toLocaleString()}`;
+      document.getElementById('resumen-total').innerText = `$${total.toLocaleString()}`;
+      document.getElementById('resumen-abonado').innerText = `$${inicial.toLocaleString()}`;
+      document.getElementById('resumen-saldo').innerText = `$${saldo.toLocaleString()}`;
+    }
+
+    function guardarOperacion() {
+      const clienta = document.getElementById('reg-clienta').value.trim();
+      const dni = document.getElementById('reg-dni').value.trim();
+      const telefono = document.getElementById('reg-telefono').value.trim();
+      const fechaEvento = document.getElementById('reg-fecha-evento').value;
+      const domicilio = document.getElementById('reg-domicilio').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const observaciones = document.getElementById('reg-observaciones').value.trim();
+      const inicial = parseFloat(document.getElementById('monto-pago-inicial').value) || 0;
+      const medio = document.getElementById('medio-pago-inicial').value;
+
+      if (!clienta || !dni || !telefono || !fechaEvento || itemsOrdenActual.length === 0) {
+        return alert('Completa Nombre, DNI, Teléfono, Fecha de Evento y selecciona al menos 1 producto.');
+      }
+
+      const subtotal = itemsOrdenActual.reduce((s, i) => s + i.precio, 0);
+      const tipo = document.getElementById('tipo-ajuste').value;
+      const valor = parseFloat(document.getElementById('valor-ajuste').value) || 0;
+      let ajuste = 0;
+      if (tipo === 'descuento-monto') ajuste = -valor;
+      else if (tipo === 'descuento-porcentaje') ajuste = -(subtotal * (valor / 100));
+      else if (tipo === 'recargo-monto') ajuste = valor;
+      else if (tipo === 'recargo-porcentaje') ajuste = subtotal * (valor / 100);
+
+      const total = Math.max(0, subtotal + ajuste);
+
+      const nuevaOp = {
+        id: Date.now(), fechaRegistro: new Date().toLocaleDateString(),
+        clienta, dni, telefono, domicilio, email, fechaEvento, observaciones,
+        items: [...itemsOrdenActual], total,
+        pagos: inicial > 0 ? [{ fecha: new Date().toLocaleDateString(), monto: inicial, medio, facturado: false }] : []
+      };
+
+      dbOperaciones.push(nuevaOp);
+      guardarDB();
+
+      itemsOrdenActual = [];
+      document.getElementById('reg-clienta').value = '';
+      document.getElementById('reg-dni').value = '';
+      document.getElementById('reg-telefono').value = '';
+      document.getElementById('reg-domicilio').value = '';
+      document.getElementById('reg-email').value = '';
+      document.getElementById('reg-fecha-evento').value = '';
+      document.getElementById('reg-observaciones').value = '';
+      document.getElementById('valor-ajuste').value = 0;
+      document.getElementById('monto-pago-inicial').value = 0;
+      
+      renderTablaOrden();
+      calcularTotales();
+      renderHistorial();
+      renderCajaMovimientos();
+      actualizarAgendaDetalle();
+      alert('¡Operación guardada correctamente!');
+      switchTab('historial');
+    }
+
+    // --- CATÁLOGO & TALLES ---
+    function renderTablaStock() {
+      const tbody = document.getElementById('tabla-stock-body');
+      tbody.innerHTML = dbProductos.map(p => `
+        <tr class="hover:bg-gray-50 border-b">
+          <td class="p-3">
+            <div class="flex items-center gap-2">
+              ${p.foto ? `<img src="${p.foto}" class="w-10 h-10 rounded-lg object-cover border">` : '<div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-400">Sin foto</div>'}
+              <span class="font-bold text-purple-900">${p.codigo}</span>
+            </div>
+          </td>
+          <td class="p-3 font-medium">${p.nombre}<br><span class="text-xs text-gray-400">${p.categoria}</span></td>
+          <td class="p-3 text-xs bg-purple-50/50 rounded-lg">
+            <div><strong class="text-purple-900">Talle:</strong> ${p.talle || '-'}</div>
+            <div class="text-gray-600">Busto: ${p.busto || '-'} cm | Cintura: ${p.cintura || '-'} cm | Cadera: ${p.cadera || '-'} cm</div>
+            <div class="text-gray-500 italic">${p.largo || ''}</div>
+          </td>
+          <td class="p-3"><span class="px-2 py-1 rounded text-xs font-semibold ${p.modalidad === 'Venta' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">${p.modalidad}</span></td>
+          <td class="p-3">$${p.precioVenta.toLocaleString()}</td>
+          <td class="p-3 font-semibold text-purple-900">$${p.precioAlquiler.toLocaleString()}</td>
+          <td class="p-3"><span class="text-xs px-2 py-1 rounded-full font-medium ${p.estadoLimpieza.includes('Disponible') ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">${p.estadoLimpieza}</span></td>
+          <td class="p-3 text-center">
+            <button onclick="eliminarProducto(${p.id})" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function abrirModalNuevoProducto() {
+      document.getElementById('prod-codigo').value = '';
+      document.getElementById('prod-nombre').value = '';
+      document.getElementById('prod-foto').value = '';
+      document.getElementById('prod-talle').value = '';
+      document.getElementById('prod-busto').value = '';
+      document.getElementById('prod-cintura').value = '';
+      document.getElementById('prod-cadera').value = '';
+      document.getElementById('prod-largo').value = '';
+      document.getElementById('prod-precio-venta').value = '';
+      document.getElementById('prod-precio-alquiler').value = '';
+      document.getElementById('modal-producto').classList.remove('hidden');
+    }
+
+    function cerrarModalProducto() {
+      document.getElementById('modal-producto').classList.add('hidden');
+    }
+
+    function guardarProducto() {
+      const codigo = document.getElementById('prod-codigo').value.trim().toUpperCase();
+      const nombre = document.getElementById('prod-nombre').value.trim();
+      if (!codigo || !nombre) return alert('Ingresa código y nombre del producto.');
+
+      dbProductos.push({
+        id: Date.now(), codigo, nombre,
+        foto: document.getElementById('prod-foto').value.trim(),
+        talle: document.getElementById('prod-talle').value.trim(),
+        busto: parseFloat(document.getElementById('prod-busto').value) || null,
+        cintura: parseFloat(document.getElementById('prod-cintura').value) || null,
+        cadera: parseFloat(document.getElementById('prod-cadera').value) || null,
+        largo: document.getElementById('prod-largo').value.trim(),
+        categoria: document.getElementById('prod-categoria').value,
+        modalidad: document.getElementById('prod-modalidad').value,
+        precioVenta: parseFloat(document.getElementById('prod-precio-venta').value) || 0,
+        precioAlquiler: parseFloat(document.getElementById('prod-precio-alquiler').value) || 0,
+        estadoLimpieza: document.getElementById('prod-estado-limpieza').value
+      });
+
+      guardarDB();
+      renderTablaStock();
+      cerrarModalProducto();
+    }
+
+    function eliminarProducto(id) {
+      if (confirm('¿Eliminar prenda del stock?')) {
+        dbProductos = dbProductos.filter(p => p.id !== id);
+        guardarDB();
+        renderTablaStock();
+      }
+    }
+
+    // --- COBROS Y GASTOS ---
+    function guardarGasto() {
+      const concepto = document.getElementById('gasto-concepto').value.trim();
+      const monto = parseFloat(document.getElementById('gasto-monto').value) || 0;
+      const tipo = document.getElementById('gasto-tipo').value;
+      const medio = document.getElementById('gasto-medio').value;
+
+      if (!concepto || monto <= 0) return alert('Ingresa concepto y monto del gasto.');
+
+      dbGastos.push({ id: Date.now(), fecha: new Date().toLocaleDateString(), concepto, tipo, monto, medio, facturado: true });
+      guardarDB();
+      document.getElementById('gasto-concepto').value = '';
+      document.getElementById('gasto-monto').value = '';
+      renderCajaMovimientos();
+      alert('Gasto registrado.');
+    }
+
+    function renderCajaMovimientos() {
+      const filtro = document.getElementById('filtro-caja-tipo').value;
+      let movimientos = [];
+
+      dbOperaciones.forEach(op => {
+        op.pagos.forEach((p, idx) => {
+          movimientos.push({
+            id: `ing-${op.id}-${idx}`, fecha: p.fecha, tipo: 'Ingreso',
+            concepto: `Cobro: ${op.clienta} (DNI ${op.dni || 'S/D'})`, medio: p.medio,
+            monto: p.monto, esIngreso: true, opId: op.id, pagoIdx: idx, facturado: p.facturado || false
+          });
+        });
+      });
+
+      dbGastos.forEach(g => {
+        movimientos.push({
+          id: `egr-${g.id}`, fecha: g.fecha, tipo: `Gasto ${g.tipo}`,
+          concepto: g.concepto, medio: g.medio, monto: g.monto, esIngreso: false, facturado: g.facturado
+        });
+      });
+
+      const totalIngresos = movimientos.filter(m => m.esIngreso).reduce((s, m) => s + m.monto, 0);
+      const totalEgresos = movimientos.filter(m => !m.esIngreso).reduce((s, m) => s + m.monto, 0);
+      const ef = movimientos.filter(m => m.esIngreso && m.medio === 'Efectivo').reduce((s, m) => s + m.monto, 0);
+      const tr = movimientos.filter(m => m.esIngreso && m.medio === 'Transferencia').reduce((s, m) => s + m.monto, 0);
+      const ta = movimientos.filter(m => m.esIngreso && m.medio === 'Tarjeta').reduce((s, m) => s + m.monto, 0);
+
+      document.getElementById('caja-total-ingresos').innerText = `$${totalIngresos.toLocaleString()}`;
+      document.getElementById('caja-total-egresos').innerText = `$${totalEgresos.toLocaleString()}`;
+      document.getElementById('caja-ganancia-neta').innerText = `$${(totalIngresos - totalEgresos).toLocaleString()}`;
+      document.getElementById('caja-efectivo').innerText = `$${ef.toLocaleString()}`;
+      document.getElementById('caja-transf').innerText = `$${tr.toLocaleString()}`;
+      document.getElementById('caja-tarjeta').innerText = `$${ta.toLocaleString()}`;
+
+      if (filtro === 'ingreso') movimientos = movimientos.filter(m => m.esIngreso);
+      if (filtro === 'egreso') movimientos = movimientos.filter(m => !m.esIngreso);
+
+      const tbody = document.getElementById('tabla-caja-body');
+      tbody.innerHTML = movimientos.map(m => `
+        <tr class="border-b hover:bg-gray-50">
+          <td class="p-2.5 text-xs text-gray-500">${m.fecha}</td>
+          <td class="p-2.5"><span class="px-2 py-0.5 rounded text-xs font-semibold ${m.esIngreso ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${m.tipo}</span></td>
+          <td class="p-2.5 font-medium text-gray-800">${m.concepto}</td>
+          <td class="p-2.5 text-xs"><span class="border px-1.5 py-0.5 rounded">${m.medio}</span></td>
+          <td class="p-2.5 font-bold ${m.esIngreso ? 'text-green-700' : 'text-red-600'}">${m.esIngreso ? '+' : '-'}$${m.monto.toLocaleString()}</td>
+          <td class="p-2.5 text-center">
+            ${m.esIngreso ? `
+              <button onclick="toggleFacturado(${m.opId}, ${m.pagoIdx})" class="text-xs px-2 py-1 rounded font-bold ${m.facturado ? 'bg-blue-100 text-blue-800 border border-blue-300' : 'bg-gray-100 text-gray-500 border'}">
+                ${m.facturado ? '🧾 Facturado' : '⚪ Pendiente'}
+              </button>
+            ` : '<span class="text-xs text-gray-400">Reg.</span>'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function toggleFacturado(opId, pagoIdx) {
+      const op = dbOperaciones.find(o => o.id === opId);
+      if (op && op.pagos[pagoIdx]) {
+        op.pagos[pagoIdx].facturado = !op.pagos[pagoIdx].facturado;
+        guardarDB();
+        renderCajaMovimientos();
+      }
+    }
+
+    // --- AGENDA & HISTORIAL ---
+    function actualizarAgendaDetalle() {
+      const fecha = document.getElementById('filtro-fecha-agenda').value;
+      const eventos = dbOperaciones.filter(op => op.fechaEvento === fecha);
+
+      document.getElementById('agenda-contador-dia').innerText = eventos.length;
+      document.getElementById('agenda-titulo-fecha').innerText = `Eventos para el ${fecha || 'Día'}`;
+
+      const cont = document.getElementById('agenda-lista-eventos');
+      if (eventos.length === 0) {
+        cont.innerHTML = `<div class="p-6 text-center text-gray-400 italic border rounded-lg">No hay alquileres agendados para esta fecha.</div>`;
+        return;
+      }
+
+      cont.innerHTML = eventos.map(op => {
+        const abonado = op.pagos.reduce((s, p) => s + p.monto, 0);
+        const saldo = op.total - abonado;
+        return `
+          <div class="border rounded-xl p-4 bg-gray-50 flex flex-col md:flex-row justify-between gap-4">
+            <div>
+              <span class="font-bold text-base text-purple-900">${op.clienta}</span> <span class="text-xs text-gray-500">(DNI: ${op.dni || 'S/D'} - Tel: ${op.telefono})</span>
+              <p class="text-xs text-gray-600 mt-1"><strong>Prendas:</strong> ${op.items.map(i => i.nombre + ' [' + i.codigo + ']').join(', ')}</p>
+              ${op.observaciones ? `<p class="text-xs text-amber-800 bg-amber-50 p-2 rounded mt-2"><strong>Ajustes/Obs:</strong> ${op.observaciones}</p>` : ''}
+            </div>
+            <div class="text-right flex flex-col justify-between">
+              <div>
+                <span class="text-xs text-gray-500 block">Saldo Pendiente</span>
+                <span class="text-base font-bold ${saldo > 0 ? 'text-red-600' : 'text-green-600'}">$${saldo.toLocaleString()}</span>
+              </div>
+              ${saldo > 0 ? `<button onclick="abrirModalPago(${op.id})" class="mt-2 bg-green-600 text-white text-xs px-3 py-1.5 rounded hover:bg-green-700">Abonar Saldo</button>` : '<span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded">COMPLETADO</span>'}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderHistorial() {
+      const tbody = document.getElementById('tabla-historial-body');
+      tbody.innerHTML = dbOperaciones.map(op => {
+        const abonado = op.pagos.reduce((s, p) => s + p.monto, 0);
+        const saldo = op.total - abonado;
+        return `
+          <tr class="hover:bg-gray-50 border-b text-xs">
+            <td class="p-3">#${op.id.toString().slice(-4)}<br><span class="text-gray-400">${op.fechaRegistro}</span></td>
+            <td class="p-3 font-semibold text-sm">${op.clienta}<br><span class="text-xs font-normal text-gray-500">DNI: ${op.dni || 'S/D'} | Tel: ${op.telefono}</span></td>
+            <td class="p-3 font-medium">${op.fechaEvento}</td>
+            <td class="p-3">${op.items.map(i => i.codigo).join(', ')}</td>
+            <td class="p-3 font-bold text-sm">$${op.total.toLocaleString()}</td>
+            <td class="p-3 text-green-600 font-semibold text-sm">$${abonado.toLocaleString()}</td>
+            <td class="p-3 font-bold text-sm ${saldo > 0 ? 'text-red-600' : 'text-green-600'}">$${saldo.toLocaleString()}</td>
+            <td class="p-3 text-center">
+              ${saldo > 0 ? `<button onclick="abrirModalPago(${op.id})" class="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700">Cobrar</button>` : '<span class="text-xs text-gray-400">Pagado</span>'}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function abrirModalPago(opId) {
+      document.getElementById('pago-op-id').value = opId;
+      document.getElementById('pago-monto').value = '';
+      document.getElementById('modal-pago').classList.remove('hidden');
+    }
+
+    function cerrarModalPago() {
+      document.getElementById('modal-pago').classList.add('hidden');
+    }
+
+    function guardarPagoCuota() {
+      const opId = parseInt(document.getElementById('pago-op-id').value);
+      const monto = parseFloat(document.getElementById('pago-monto').value) || 0;
+      const medio = document.getElementById('pago-medio').value;
+
+      if (monto <= 0) return alert('Monto inválido.');
+
+      const op = dbOperaciones.find(o => o.id === opId);
+      if (op) {
+        op.pagos.push({ fecha: new Date().toLocaleDateString(), monto, medio, facturado: false });
+        guardarDB();
+        renderHistorial();
+        renderCajaMovimientos();
+        actualizarAgendaDetalle();
+        cerrarModalPago();
+        alert('Cobro registrado exitosamente.');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -8,6 +8,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .grid-cal { display: grid; grid-template-columns: repeat(7, 1fr); }
+  </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
 
@@ -19,7 +22,7 @@
           <i data-lucide="scissors" class="w-8 h-8"></i>
         </div>
         <h2 class="text-2xl font-black text-purple-950 tracking-tight">VILMA VESTIDOS</h2>
-        <p class="text-xs text-gray-500">Sistema de Gestión de Stock, Alquileres y Caja</p>
+        <p class="text-xs text-gray-500">Sistema de Gestión de Stock, Alquileres, Tintorería y Caja</p>
       </div>
 
       <div class="space-y-4 text-sm">
@@ -49,7 +52,7 @@
           <i data-lucide="scissors" class="w-7 h-7 text-pink-400"></i>
           <div>
             <h1 class="text-lg font-bold tracking-wide">VILMA VESTIDOS</h1>
-            <p class="text-[10px] text-purple-200">Alquileres, Ventas, Stock e Indicadores</p>
+            <p class="text-[10px] text-purple-200">Alquileres, Ventas, Stock y Tintorería</p>
           </div>
         </div>
         <!-- Navegación -->
@@ -58,16 +61,16 @@
             <i data-lucide="shopping-bag" class="w-4 h-4"></i> Registrar
           </button>
           <button onclick="switchTab('inventario')" id="tab-inventario" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-800 text-purple-100 flex items-center gap-1">
-            <i data-lucide="box" class="w-4 h-4"></i> Stock & Excel
+            <i data-lucide="box" class="w-4 h-4"></i> Stock & Tintorería
           </button>
           <button onclick="switchTab('agenda')" id="tab-agenda" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-800 text-purple-100 flex items-center gap-1">
-            <i data-lucide="calendar" class="w-4 h-4"></i> Agenda
+            <i data-lucide="calendar" class="w-4 h-4"></i> Agenda Mensual
           </button>
           <button onclick="switchTab('cobros')" id="tab-cobros" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-800 text-purple-100 flex items-center gap-1">
-            <i data-lucide="dollar-sign" class="w-4 h-4"></i> Cobros & Caja
+            <i data-lucide="dollar-sign" class="w-4 h-4"></i> Cobros & Caja Proyectada
           </button>
           <button onclick="switchTab('historial')" id="tab-historial" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-800 text-purple-100 flex items-center gap-1">
-            <i data-lucide="receipt" class="w-4 h-4"></i> Alquileres / Ventas
+            <i data-lucide="receipt" class="w-4 h-4"></i> Historial
           </button>
           <button onclick="cerrarSesion()" class="px-2 py-1.5 bg-red-800 hover:bg-red-900 text-white rounded-lg text-xs font-semibold ml-2">
             <i data-lucide="log-out" class="w-4 h-4"></i>
@@ -78,14 +81,13 @@
 
     <main class="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
 
-      <!-- SECCIÓN 1: REGISTRO DE ALQUILER O VENTA Y FICHA CLIENTE -->
+      <!-- SECCIÓN 1: REGISTRO DE ALQUILER O VENTA -->
       <section id="sec-registro" class="space-y-6">
         <div class="bg-white rounded-xl shadow-md p-6 border border-gray-200">
           <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
             <i data-lucide="user-check" class="text-purple-600"></i> Registrar Operación y Ficha de Clienta
           </h2>
 
-          <!-- Ficha Cliente -->
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-purple-50/50 p-4 rounded-xl border border-purple-100">
             <div>
               <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Nombre Completo *</label>
@@ -113,7 +115,6 @@
             </div>
           </div>
 
-          <!-- Buscador y Selección -->
           <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
             <h3 class="text-sm font-semibold text-purple-900 mb-2 flex items-center gap-1">
               <i data-lucide="search" class="w-4 h-4"></i> Buscar y Añadir Vestidos / Accesorios
@@ -126,7 +127,6 @@
             </div>
           </div>
 
-          <!-- Tabla Orden -->
           <div class="mb-6 overflow-x-auto border border-gray-200 rounded-lg">
             <table class="w-full text-sm text-left text-gray-600">
               <thead class="bg-gray-100 text-xs text-gray-700 uppercase">
@@ -135,26 +135,22 @@
                   <th class="p-3">Producto / Modelo</th>
                   <th class="p-3">Color</th>
                   <th class="p-3">Medidas (B/C/C/L)</th>
-                  <th class="p-3">Modalidad</th>
+                  <th class="p-3">Tipo Operación</th>
                   <th class="p-3">Precio Lista</th>
                   <th class="p-3 text-center">Quitar</th>
                 </tr>
               </thead>
               <tbody id="tabla-orden-items">
-                <tr>
-                  <td colspan="7" class="p-4 text-center text-gray-400 italic">No hay productos seleccionados. Usa el buscador de arriba.</td>
-                </tr>
+                <tr><td colspan="7" class="p-4 text-center text-gray-400 italic">No hay productos seleccionados.</td></tr>
               </tbody>
             </table>
           </div>
 
-          <!-- Observaciones Modistería -->
           <div class="mb-6">
             <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Ajustes de Modistería / Observaciones del Pedido</label>
             <textarea id="reg-observaciones" rows="2" placeholder="Ej: Ajustar bretel 2cm, dobladillo para taco 8cm..." class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-purple-500 outline-none"></textarea>
           </div>
 
-          <!-- Cuentas y Totales -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-5 rounded-xl border border-gray-200">
             <div class="space-y-4">
               <h4 class="font-bold text-gray-800 text-sm flex items-center gap-1">
@@ -215,17 +211,49 @@
         </div>
       </section>
 
-      <!-- SECCIÓN 2: INVENTARIO, MEDIDAS, FILTROS Y EXCEL -->
+      <!-- SECCIÓN 2: INVENTARIO Y CONTROL DE TINTORERÍA -->
       <section id="sec-inventario" class="hidden space-y-6">
+        
+        <!-- RESUMEN DE TINTORERÍA Y LAVADO -->
+        <div class="bg-amber-50 p-5 rounded-xl border border-amber-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-amber-100 text-amber-900 rounded-full">
+              <i data-lucide="sparkles" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-amber-950 text-base">Control de Lavado y Tintorería</h3>
+              <p class="text-xs text-amber-800">Prendas que requieren limpieza antes de volver al perchero</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="text-right">
+              <span class="text-xs text-amber-800 font-semibold uppercase block">Pendientes de Lavar</span>
+              <span id="contador-pendientes-lavar" class="text-2xl font-black text-amber-950">0 Prendas</span>
+            </div>
+            <button onclick="toggleResumenTintoreria()" class="bg-amber-700 hover:bg-amber-800 text-white font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1">
+              <i data-lucide="list-checks" class="w-4 h-4"></i> Ver Lista
+            </button>
+          </div>
+        </div>
+
+        <!-- LISTA DESPLEGABLE DE PRENDAS A LAVAR -->
+        <div id="panel-lista-tintoreria" class="hidden bg-white p-5 rounded-xl border border-amber-300 shadow-md space-y-3">
+          <h4 class="font-bold text-sm text-gray-800 border-b pb-2 flex items-center gap-2">
+            <i data-lucide="shirt" class="text-amber-600"></i> Vestidos a llevar a la Tintorería / Lavar:
+          </h4>
+          <div id="contenedor-items-lavar" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+        </div>
+
+        <!-- BARRA SUPERIOR DE STOCK -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
           <div>
             <h2 class="text-lg font-bold text-gray-800">Inventario de Stock, Colores y Talles</h2>
-            <p class="text-xs text-gray-500">Gestión de Prendas con Fotos, Color, Medidas (cm), Precios e Importación Masiva</p>
+            <p class="text-xs text-gray-500">Modifica prendas, edita medidas y actualiza el estado de limpieza</p>
           </div>
           <div class="flex flex-wrap gap-2">
             <input type="file" id="input-excel" accept=".csv" class="hidden" onchange="procesarExcelCSV(event)">
             <button onclick="document.getElementById('input-excel').click()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-lg font-semibold text-xs transition flex items-center gap-1">
-              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Importar Stock desde Excel (CSV)
+              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Importar CSV
             </button>
             <button onclick="abrirModalNuevoProducto()" class="bg-purple-700 hover:bg-purple-800 text-white px-3 py-2 rounded-lg font-semibold text-xs transition flex items-center gap-1">
               <i data-lucide="plus" class="w-4 h-4"></i> Cargar Vestido Manual
@@ -233,7 +261,7 @@
           </div>
         </div>
 
-        <!-- FILTROS RÁPIDOS POR COLOR Y TALLE -->
+        <!-- FILTROS RÁPIDOS POR COLOR, TALLE Y ESTADO -->
         <div class="bg-purple-50 p-4 rounded-xl border border-purple-200 flex flex-wrap gap-4 items-center text-xs font-semibold">
           <span class="text-purple-900 flex items-center gap-1"><i data-lucide="filter" class="w-4 h-4"></i> FILTRAR STOCK POR:</span>
           
@@ -263,6 +291,16 @@
               <option value="XXL">XXL+</option>
             </select>
           </div>
+
+          <div class="flex items-center gap-1">
+            <label class="text-gray-600">Estado Limpieza:</label>
+            <select id="filtro-stock-estado" onchange="renderTablaStock()" class="border p-1.5 rounded bg-white font-normal">
+              <option value="todos">Todos los Estados</option>
+              <option value="Disponible / Limpio">🟢 Limpios / Disponibles</option>
+              <option value="En Tintorería">🟡 Pendientes de Lavar</option>
+              <option value="Ingresó al Salón">🔵 Alquilados / En Salón</option>
+            </select>
+          </div>
         </div>
 
         <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
@@ -275,69 +313,96 @@
                   <th class="p-3">Color</th>
                   <th class="p-3">Guía de Talles / Medidas (cm)</th>
                   <th class="p-3">Modalidad</th>
-                  <th class="p-3">P. Venta</th>
-                  <th class="p-3">P. Alquiler</th>
-                  <th class="p-3">Estado Limpieza</th>
+                  <th class="p-3">P. Venta / Alq.</th>
+                  <th class="p-3">Estado de Limpieza (Cambio Rápido)</th>
                   <th class="p-3 text-center">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="tabla-stock-body" class="divide-y divide-gray-200">
-                <!-- JS Populated -->
-              </tbody>
+              <tbody id="tabla-stock-body" class="divide-y divide-gray-200"></tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- SECCIÓN 3: AGENDA Y EVENTOS -->
+      <!-- SECCIÓN 3: AGENDA MENSUAL -->
       <section id="sec-agenda" class="hidden space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <i data-lucide="calendar" class="text-purple-600"></i> Calendario de Eventos
-            </h2>
-            <label class="block text-xs font-semibold text-gray-600 uppercase mb-2">Seleccionar Fecha:</label>
-            <input type="date" id="filtro-fecha-agenda" onchange="actualizarAgendaDetalle()" class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-purple-500 mb-4">
-            
-            <div class="bg-purple-50 p-4 rounded-lg border border-purple-200 text-center">
-              <span class="text-xs text-purple-700 font-semibold block">ALQUILERES / ENTREGAS DEL DÍA</span>
-              <span id="agenda-contador-dia" class="text-4xl font-black text-purple-900">0</span>
+        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4">
+            <div>
+              <h2 class="text-lg font-bold text-purple-950 flex items-center gap-2">
+                <i data-lucide="calendar" class="text-purple-600"></i> Calendario Mensual de Eventos
+              </h2>
+              <p class="text-xs text-gray-500">Visualiza los alquileres y entregas agendadas día por día</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onclick="cambiarMesAgenda(-1)" class="p-2 border rounded-lg hover:bg-gray-100"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+              <span id="agenda-nombre-mes" class="font-black text-sm uppercase text-purple-900 w-36 text-center">OCTUBRE 2026</span>
+              <button onclick="cambiarMesAgenda(1)" class="p-2 border rounded-lg hover:bg-gray-100"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
             </div>
           </div>
 
-          <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h3 class="text-base font-bold text-gray-800 mb-3" id="agenda-titulo-fecha">Detalle de Alquileres</h3>
-            <div id="agenda-lista-eventos" class="space-y-4"></div>
+          <div class="grid-cal text-center text-xs font-bold bg-purple-900 text-white py-2 rounded-t-lg">
+            <div>DOM</div><div>LUN</div><div>MAR</div><div>MIÉ</div><div>JUE</div><div>VIE</div><div>SÁB</div>
           </div>
+          <div id="grid-calendario-dias" class="grid-cal border-l border-b border-r bg-gray-50 rounded-b-lg"></div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+          <h3 class="text-base font-bold text-gray-800 mb-3" id="agenda-titulo-fecha">Detalle del Día Seleccionado</h3>
+          <div id="agenda-lista-eventos" class="space-y-4"></div>
         </div>
       </section>
 
-      <!-- SECCIÓN 4: COBROS, GASTOS Y CAJA -->
+      <!-- SECCIÓN 4: COBROS Y CAJA PROYECTADA -->
       <section id="sec-cobros" class="hidden space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-green-500">
-            <span class="text-xs text-gray-500 font-semibold uppercase">Total Ingresos</span>
+            <span class="text-xs text-gray-500 font-semibold uppercase">1. Ingresos Cobrados</span>
             <h3 id="caja-total-ingresos" class="text-2xl font-bold text-green-700">$0</h3>
           </div>
+          <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-amber-500">
+            <span class="text-xs text-gray-500 font-semibold uppercase">2. Saldos a Cobrar (Pendiente)</span>
+            <h3 id="caja-total-pendientes" class="text-2xl font-bold text-amber-600">$0</h3>
+          </div>
           <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-red-500">
-            <span class="text-xs text-gray-500 font-semibold uppercase">Total Gastos / Egresos</span>
+            <span class="text-xs text-gray-500 font-semibold uppercase">3. Total Gastos / Egresos</span>
             <h3 id="caja-total-egresos" class="text-2xl font-bold text-red-600">$0</h3>
           </div>
-          <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-purple-500">
-            <span class="text-xs text-gray-500 font-semibold uppercase">Ganancia Neta</span>
-            <h3 id="caja-ganancia-neta" class="text-2xl font-bold text-purple-900">$0</h3>
-          </div>
-          <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-blue-500">
-            <span class="text-xs text-gray-500 font-semibold uppercase">Desglose Medios</span>
-            <div class="text-xs space-y-1 mt-1 text-gray-600">
-              <div>Ef: <span id="caja-efectivo" class="font-bold text-gray-800">$0</span></div>
-              <div>Transf: <span id="caja-transf" class="font-bold text-gray-800">$0</span></div>
-              <div>Tarj: <span id="caja-tarjeta" class="font-bold text-gray-800">$0</span></div>
-            </div>
+          <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-purple-600 bg-purple-50/50">
+            <span class="text-xs text-purple-900 font-bold uppercase">📊 Resultado Neto Proyectado</span>
+            <h3 id="caja-resultado-neto" class="text-2xl font-black text-purple-950">$0</h3>
+            <p class="text-[10px] text-gray-500 mt-1">(Cobrado + Pendiente - Egresos)</p>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+            <h3 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <i data-lucide="plus-circle" class="text-green-600"></i> Registrar Ingreso Manual / Aporte
+            </h3>
+            <div class="space-y-3 text-sm">
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1">Concepto / Detalle</label>
+                <input type="text" id="ingreso-concepto" placeholder="Ej: Aporte de caja inicial, Venta extra..." class="w-full border p-2 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1">Monto ($)</label>
+                <input type="number" id="ingreso-monto" placeholder="0.00" class="w-full border p-2 rounded-lg font-bold text-green-700">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1">Medio de Pago</label>
+                <select id="ingreso-medio" class="w-full border p-2 rounded-lg">
+                  <option value="Efectivo">Efectivo</option>
+                  <option value="Transferencia">Transferencia</option>
+                  <option value="Tarjeta">Tarjeta</option>
+                </select>
+              </div>
+              <button onclick="guardarIngresoManual()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg transition text-xs flex items-center justify-center gap-1">
+                <i data-lucide="arrow-up-right" class="w-4 h-4"></i> Guardar Ingreso
+              </button>
+            </div>
+          </div>
+
           <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
             <h3 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
               <i data-lucide="minus-circle" class="text-red-500"></i> Registrar Gasto / Egreso
@@ -367,14 +432,14 @@
                 </select>
               </div>
               <button onclick="guardarGasto()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg transition text-xs flex items-center justify-center gap-1">
-                <i data-lucide="plus-circle" class="w-4 h-4"></i> Guardar Gasto
+                <i data-lucide="arrow-down-right" class="w-4 h-4"></i> Guardar Gasto
               </button>
             </div>
           </div>
 
-          <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200 space-y-4">
+          <div class="md:col-span-2 lg:col-span-1 bg-white p-6 rounded-xl shadow-md border border-gray-200 space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
-              <h3 class="text-base font-bold text-gray-800">Flujo de Caja y Facturación</h3>
+              <h3 class="text-base font-bold text-gray-800">Flujo de Caja Realizado</h3>
               <select id="filtro-caja-tipo" onchange="renderCajaMovimientos()" class="border rounded p-1 text-xs">
                 <option value="todos">Todos los Movimientos</option>
                 <option value="ingreso">Solo Ingresos</option>
@@ -388,10 +453,9 @@
                   <tr>
                     <th class="p-2.5">Fecha</th>
                     <th class="p-2.5">Tipo</th>
-                    <th class="p-2.5">Concepto / Clienta</th>
+                    <th class="p-2.5">Concepto</th>
                     <th class="p-2.5">Medio</th>
                     <th class="p-2.5">Monto</th>
-                    <th class="p-2.5 text-center">Facturar</th>
                   </tr>
                 </thead>
                 <tbody id="tabla-caja-body" class="divide-y divide-gray-200"></tbody>
@@ -429,13 +493,15 @@
 
     </main>
 
-    <!-- MODAL CARGAR VESTIDO CON COLOR Y TALLES -->
+    <!-- MODAL CARGAR / EDITAR VESTIDO -->
     <div id="modal-producto" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
       <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center border-b pb-3">
-          <h3 class="text-lg font-bold text-gray-800">Cargar Vestido con Color y Medidas</h3>
+          <h3 id="modal-producto-titulo" class="text-lg font-bold text-gray-800">Cargar Vestido con Color y Medidas</h3>
           <button onclick="cerrarModalProducto()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x"></i></button>
         </div>
+
+        <input type="hidden" id="edit-prod-id">
 
         <div class="grid grid-cols-2 gap-3 text-sm">
           <div>
@@ -496,18 +562,18 @@
           <div><label class="block text-xs font-semibold text-gray-600 mb-1">Precio Venta ($)</label><input type="number" id="prod-precio-venta" placeholder="0.00" class="w-full border p-2 rounded-lg"></div>
           <div><label class="block text-xs font-semibold text-gray-600 mb-1">Precio Alquiler ($)</label><input type="number" id="prod-precio-alquiler" placeholder="0.00" class="w-full border p-2 rounded-lg"></div>
           <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Estado de Limpieza</label>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Estado de Limpieza / Stock</label>
             <select id="prod-estado-limpieza" class="w-full border p-2 rounded-lg">
               <option value="Disponible / Limpio">🟢 Disponible / Limpio</option>
-              <option value="En Tintorería">🟡 En Tintorería / Lavado</option>
-              <option value="Ingresó al Salón">🔵 Ingresó al Salón (Revisión)</option>
+              <option value="En Tintorería">🟡 Pendiente de Lavar / Tintorería</option>
+              <option value="Ingresó al Salón">🔵 Alquilado / En Salón</option>
             </select>
           </div>
         </div>
 
         <div class="flex justify-end space-x-2 pt-3 border-t">
           <button onclick="cerrarModalProducto()" class="px-4 py-2 border rounded-lg text-sm text-gray-600">Cancelar</button>
-          <button onclick="guardarProducto()" class="px-4 py-2 bg-purple-700 text-white rounded-lg text-sm font-semibold hover:bg-purple-800">Guardar Vestido</button>
+          <button onclick="guardarProducto()" class="px-4 py-2 bg-purple-700 text-white rounded-lg text-sm font-semibold hover:bg-purple-800">Guardar Cambios</button>
         </div>
       </div>
     </div>
@@ -549,12 +615,17 @@
   <script>
     let dbProductos = JSON.parse(localStorage.getItem('vilma_v3_productos')) || [
       { id: 1, codigo: 'ALQ-15A-01', nombre: 'Vestido Gala Sateen', color: 'Rojo', foto: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=150&auto=format&fit=crop', talle: 'M', busto: 90, cintura: 70, cadera: 98, largo: '145 cm', categoria: '15 Años', modalidad: 'Alquiler', precioVenta: 120000, precioAlquiler: 35000, estadoLimpieza: 'Disponible / Limpio' },
-      { id: 2, codigo: 'VEN-NOV-01', nombre: 'Novia Corte Sirena Encaje', color: 'Blanco', foto: 'https://images.unsplash.com/photo-1594552072238-b8a33785b261?w=150&auto=format&fit=crop', talle: 'S', busto: 85, cintura: 65, cadera: 92, largo: '150 cm', categoria: 'Novia', modalidad: 'Venta', precioVenta: 280000, precioAlquiler: 90000, estadoLimpieza: 'Disponible / Limpio' }
+      { id: 2, codigo: 'VEN-NOV-01', nombre: 'Novia Corte Sirena Encaje', color: 'Blanco', foto: 'https://images.unsplash.com/photo-1594552072238-b8a33785b261?w=150&auto=format&fit=crop', talle: 'S', busto: 85, cintura: 65, cadera: 92, largo: '150 cm', categoria: 'Novia', modalidad: 'Venta', precioVenta: 280000, precioAlquiler: 90000, estadoLimpieza: 'En Tintorería' }
     ];
 
     let dbOperaciones = JSON.parse(localStorage.getItem('vilma_v3_operaciones')) || [];
     let dbGastos = JSON.parse(localStorage.getItem('vilma_v3_gastos')) || [];
+    let dbIngresosManuales = JSON.parse(localStorage.getItem('vilma_v3_ingresos')) || [];
     let itemsOrdenActual = [];
+
+    let mesAgendaActual = new Date().getMonth();
+    let anioAgendaActual = new Date().getFullYear();
+    let fechaSeleccionadaAgenda = new Date().toISOString().split('T')[0];
 
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
@@ -570,9 +641,8 @@
         renderTablaStock();
         renderHistorial();
         renderCajaMovimientos();
-        const hoy = new Date().toISOString().split('T')[0];
-        document.getElementById('filtro-fecha-agenda').value = hoy;
-        actualizarAgendaDetalle();
+        renderCalendarioMensual();
+        actualizarAgendaDetalle(fechaSeleccionadaAgenda);
         lucide.createIcons();
       } else {
         alert('Usuario o contraseña incorrectos.');
@@ -588,6 +658,7 @@
       localStorage.setItem('vilma_v3_productos', JSON.stringify(dbProductos));
       localStorage.setItem('vilma_v3_operaciones', JSON.stringify(dbOperaciones));
       localStorage.setItem('vilma_v3_gastos', JSON.stringify(dbGastos));
+      localStorage.setItem('vilma_v3_ingresos', JSON.stringify(dbIngresosManuales));
     }
 
     function switchTab(tab) {
@@ -597,37 +668,345 @@
       });
       document.getElementById(`sec-${tab}`).classList.remove('hidden');
       document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-700 text-white flex items-center gap-1";
+      if (tab === 'agenda') renderCalendarioMensual();
+      if (tab === 'inventario') renderTablaStock();
       lucide.createIcons();
     }
 
-    // --- IMPORTAR DESDE EXCEL / CSV CON COLOR ---
+    // --- TINTORERÍA & LAVADO ---
+    function toggleResumenTintoreria() {
+      const p = document.getElementById('panel-lista-tintoreria');
+      p.classList.toggle('hidden');
+    }
+
+    function cambiarEstadoRápido(id, nuevoEstado) {
+      const p = dbProductos.find(prod => prod.id === id);
+      if (p) {
+        p.estadoLimpieza = nuevoEstado;
+        guardarDB();
+        renderTablaStock();
+      }
+    }
+
+    // --- STOCK & TABLA ---
+    function renderTablaStock() {
+      const filtroColor = document.getElementById('filtro-stock-color').value;
+      const filtroTalle = document.getElementById('filtro-stock-talle').value;
+      const filtroEstado = document.getElementById('filtro-stock-estado').value;
+
+      let productosFiltrados = dbProductos;
+
+      if (filtroColor !== 'todos') {
+        productosFiltrados = productosFiltrados.filter(p => (p.color || '').toLowerCase().includes(filtroColor.toLowerCase()));
+      }
+      if (filtroTalle !== 'todos') {
+        productosFiltrados = productosFiltrados.filter(p => (p.talle || '').toUpperCase() === filtroTalle.toUpperCase());
+      }
+      if (filtroEstado !== 'todos') {
+        productosFiltrados = productosFiltrados.filter(p => p.estadoLimpieza === filtroEstado);
+      }
+
+      // Actualizar contador de tintorería
+      const pendientesLavar = dbProductos.filter(p => p.estadoLimpieza === 'En Tintorería');
+      document.getElementById('contador-pendientes-lavar').innerText = `${pendientesLavar.length} Prendas`;
+
+      const contLavar = document.getElementById('contenedor-items-lavar');
+      if (pendientesLavar.length === 0) {
+        contLavar.innerHTML = `<div class="col-span-full text-xs text-gray-400 italic">No hay prendas pendientes de lavar en este momento. ¡Todo limpio!</div>`;
+      } else {
+        contLavar.innerHTML = pendientesLavar.map(p => `
+          <div class="border p-2.5 rounded-lg bg-amber-50/50 flex justify-between items-center text-xs">
+            <div>
+              <span class="font-bold text-amber-950">${p.codigo}</span> - ${p.nombre}
+              <span class="block text-[10px] text-gray-500">Color: ${p.color || '-'} | Talle: ${p.talle || '-'}</span>
+            </div>
+            <button onclick="cambiarEstadoRápido(${p.id}, 'Disponible / Limpio')" class="bg-green-600 text-white px-2 py-1 rounded text-[10px] font-bold hover:bg-green-700">
+              Marcar Limpio
+            </button>
+          </div>
+        `).join('');
+      }
+
+      const tbody = document.getElementById('tabla-stock-body');
+      tbody.innerHTML = productosFiltrados.map(p => `
+        <tr class="hover:bg-gray-50 border-b text-xs">
+          <td class="p-3">
+            <div class="flex items-center gap-2">
+              ${p.foto ? `<img src="${p.foto}" class="w-10 h-10 rounded-lg object-cover border">` : '<div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-400">Sin foto</div>'}
+              <span class="font-bold text-purple-900">${p.codigo}</span>
+            </div>
+          </td>
+          <td class="p-3 font-medium">${p.nombre}<br><span class="text-[10px] text-gray-400">${p.categoria}</span></td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-900">${p.color || '-'}</span></td>
+          <td class="p-3 bg-purple-50/50 rounded-lg">
+            <div><strong class="text-purple-900">Talle:</strong> ${p.talle || 'Sin Talle'}</div>
+            <div class="text-gray-600 text-[10px]">Bust: ${p.busto || '-'} cm | Cint: ${p.cintura || '-'} cm | Cad: ${p.cadera || '-'} cm</div>
+            <div class="text-gray-500 italic text-[10px]">${p.largo || ''}</div>
+          </td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-semibold ${p.modalidad === 'Venta' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">${p.modalidad}</span></td>
+          <td class="p-3 font-semibold text-gray-800">$${(p.modalidad === 'Venta' ? p.precioVenta : p.precioAlquiler).toLocaleString()}</td>
+          <td class="p-3">
+            <select onchange="cambiarEstadoRápido(${p.id}, this.value)" class="border p-1 rounded font-medium text-xs ${p.estadoLimpieza.includes('Disponible') ? 'bg-green-50 text-green-800 border-green-300' : p.estadoLimpieza.includes('Tintorería') ? 'bg-yellow-50 text-yellow-800 border-yellow-300' : 'bg-blue-50 text-blue-800 border-blue-300'}">
+              <option value="Disponible / Limpio" ${p.estadoLimpieza === 'Disponible / Limpio' ? 'selected' : ''}>🟢 Disponible / Limpio</option>
+              <option value="En Tintorería" ${p.estadoLimpieza === 'En Tintorería' ? 'selected' : ''}>🟡 Pendiente de Lavar</option>
+              <option value="Ingresó al Salón" ${p.estadoLimpieza === 'Ingresó al Salón' ? 'selected' : ''}>🔵 Alquilado / En Salón</option>
+            </select>
+          </td>
+          <td class="p-3 text-center space-x-1">
+            <button onclick="editarProductoModal(${p.id})" class="text-blue-600 hover:text-blue-800 p-1" title="Editar"><i data-lucide="edit" class="w-4 h-4"></i></button>
+            <button onclick="eliminarProducto(${p.id})" class="text-red-500 hover:text-red-700 p-1" title="Eliminar"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function abrirModalNuevoProducto() {
+      document.getElementById('edit-prod-id').value = '';
+      document.getElementById('modal-producto-titulo').innerText = 'Cargar Nuevo Vestido';
+      document.getElementById('prod-codigo').value = '';
+      document.getElementById('prod-nombre').value = '';
+      document.getElementById('prod-foto').value = '';
+      document.getElementById('prod-talle').value = '';
+      document.getElementById('prod-busto').value = '';
+      document.getElementById('prod-cintura').value = '';
+      document.getElementById('prod-cadera').value = '';
+      document.getElementById('prod-largo').value = '';
+      document.getElementById('prod-precio-venta').value = '';
+      document.getElementById('prod-precio-alquiler').value = '';
+      document.getElementById('modal-producto').classList.remove('hidden');
+    }
+
+    function editarProductoModal(id) {
+      const p = dbProductos.find(prod => prod.id === id);
+      if (!p) return;
+
+      document.getElementById('edit-prod-id').value = p.id;
+      document.getElementById('modal-producto-titulo').innerText = `Editar Vestido: ${p.codigo}`;
+      document.getElementById('prod-codigo').value = p.codigo || '';
+      document.getElementById('prod-nombre').value = p.nombre || '';
+      document.getElementById('prod-color').value = p.color || 'Rojo';
+      document.getElementById('prod-categoria').value = p.categoria || '15 Años';
+      document.getElementById('prod-foto').value = p.foto || '';
+      document.getElementById('prod-talle').value = p.talle || '';
+      document.getElementById('prod-busto').value = p.busto || '';
+      document.getElementById('prod-cintura').value = p.cintura || '';
+      document.getElementById('prod-cadera').value = p.cadera || '';
+      document.getElementById('prod-largo').value = p.largo || '';
+      document.getElementById('prod-modalidad').value = p.modalidad || 'Alquiler';
+      document.getElementById('prod-precio-venta').value = p.precioVenta || 0;
+      document.getElementById('prod-precio-alquiler').value = p.precioAlquiler || 0;
+      document.getElementById('prod-estado-limpieza').value = p.estadoLimpieza || 'Disponible / Limpio';
+
+      document.getElementById('modal-producto').classList.remove('hidden');
+    }
+
+    function cerrarModalProducto() {
+      document.getElementById('modal-producto').classList.add('hidden');
+    }
+
+    function guardarProducto() {
+      const editId = document.getElementById('edit-prod-id').value;
+      const codigo = document.getElementById('prod-codigo').value.trim().toUpperCase();
+      const nombre = document.getElementById('prod-nombre').value.trim();
+
+      if (!codigo || !nombre) return alert('Ingresa código y nombre del producto.');
+
+      const datosPrenda = {
+        codigo, nombre,
+        color: document.getElementById('prod-color').value,
+        categoria: document.getElementById('prod-categoria').value,
+        foto: document.getElementById('prod-foto').value.trim(),
+        talle: document.getElementById('prod-talle').value.trim(),
+        busto: parseFloat(document.getElementById('prod-busto').value) || null,
+        cintura: parseFloat(document.getElementById('prod-cintura').value) || null,
+        cadera: parseFloat(document.getElementById('prod-cadera').value) || null,
+        largo: document.getElementById('prod-largo').value.trim(),
+        modalidad: document.getElementById('prod-modalidad').value,
+        precioVenta: parseFloat(document.getElementById('prod-precio-venta').value) || 0,
+        precioAlquiler: parseFloat(document.getElementById('prod-precio-alquiler').value) || 0,
+        estadoLimpieza: document.getElementById('prod-estado-limpieza').value
+      };
+
+      if (editId) {
+        // Editar existente
+        const idx = dbProductos.findIndex(p => p.id === parseInt(editId));
+        if (idx !== -1) dbProductos[idx] = { ...dbProductos[idx], ...datosPrenda };
+      } else {
+        // Cargar nuevo
+        dbProductos.push({ id: Date.now(), ...datosPrenda });
+      }
+
+      guardarDB();
+      renderTablaStock();
+      cerrarModalProducto();
+    }
+
+    function eliminarProducto(id) {
+      if (confirm('¿Eliminar prenda del stock?')) {
+        dbProductos = dbProductos.filter(p => p.id !== id);
+        guardarDB();
+        renderTablaStock();
+      }
+    }
+
+    // --- CALENDARIO MENSUAL ---
+    function renderCalendarioMensual() {
+      const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      document.getElementById('agenda-nombre-mes').innerText = `${meses[mesAgendaActual]} ${anioAgendaActual}`;
+
+      const primerDia = new Date(anioAgendaActual, mesAgendaActual, 1).getDay();
+      const totalDias = new Date(anioAgendaActual, mesAgendaActual + 1, 0).getDate();
+
+      const grid = document.getElementById('grid-calendario-dias');
+      grid.innerHTML = '';
+
+      for (let i = 0; i < primerDia; i++) {
+        grid.innerHTML += `<div class="p-2 border-r border-b bg-gray-100/50 min-h-[70px]"></div>`;
+      }
+
+      for (let d = 1; d <= totalDias; d++) {
+        const dStr = d < 10 ? `0${d}` : `${d}`;
+        const mStr = (mesAgendaActual + 1) < 10 ? `0${mesAgendaActual + 1}` : `${mesAgendaActual + 1}`;
+        const fechaIso = `${anioAgendaActual}-${mStr}-${dStr}`;
+
+        const eventosDelDia = dbOperaciones.filter(op => op.fechaEvento === fechaIso);
+        const esSeleccionado = fechaIso === fechaSeleccionadaAgenda;
+
+        grid.innerHTML += `
+          <div onclick="seleccionarDiaAgenda('${fechaIso}')" class="p-1 border-r border-b min-h-[70px] cursor-pointer hover:bg-purple-50 transition text-left relative ${esSeleccionado ? 'bg-purple-100 ring-2 ring-purple-600 z-10' : 'bg-white'}">
+            <span class="text-xs font-bold ${esSeleccionado ? 'text-purple-900' : 'text-gray-700'}">${d}</span>
+            ${eventosDelDia.length > 0 ? `
+              <div class="mt-1 bg-purple-800 text-white text-[10px] font-bold px-1 py-0.5 rounded flex items-center justify-between">
+                <span>${eventosDelDia.length} Alq.</span>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+    }
+
+    function cambiarMesAgenda(delta) {
+      mesAgendaActual += delta;
+      if (mesAgendaActual < 0) { mesAgendaActual = 11; anioAgendaActual--; }
+      if (mesAgendaActual > 11) { mesAgendaActual = 0; anioAgendaActual++; }
+      renderCalendarioMensual();
+    }
+
+    function seleccionarDiaAgenda(fecha) {
+      fechaSeleccionadaAgenda = fecha;
+      renderCalendarioMensual();
+      actualizarAgendaDetalle(fecha);
+    }
+
+    function actualizarAgendaDetalle(fecha) {
+      const eventos = dbOperaciones.filter(op => op.fechaEvento === fecha);
+      document.getElementById('agenda-titulo-fecha').innerText = `Detalle de Alquileres para el ${fecha || 'Día'}`;
+
+      const cont = document.getElementById('agenda-lista-eventos');
+      if (eventos.length === 0) {
+        cont.innerHTML = `<div class="p-6 text-center text-gray-400 italic border rounded-lg">No hay alquileres agendados para esta fecha.</div>`;
+        return;
+      }
+
+      cont.innerHTML = eventos.map(op => {
+        const abonado = op.pagos.reduce((s, p) => s + p.monto, 0);
+        const saldo = op.total - abonado;
+        return `
+          <div class="border rounded-xl p-4 bg-gray-50 flex flex-col md:flex-row justify-between gap-4">
+            <div>
+              <span class="font-bold text-base text-purple-900">${op.clienta}</span> <span class="text-xs text-gray-500">(DNI: ${op.dni || 'S/D'} - Tel: ${op.telefono})</span>
+              <p class="text-xs text-gray-600 mt-1"><strong>Prendas:</strong> ${op.items.map(i => i.nombre + ' [' + i.codigo + ']').join(', ')}</p>
+              ${op.observaciones ? `<p class="text-xs text-amber-800 bg-amber-50 p-2 rounded mt-2"><strong>Ajustes/Obs:</strong> ${op.observaciones}</p>` : ''}
+            </div>
+            <div class="text-right flex flex-col justify-between">
+              <div>
+                <span class="text-xs text-gray-500 block">Saldo Pendiente</span>
+                <span class="text-base font-bold ${saldo > 0 ? 'text-red-600' : 'text-green-600'}">$${saldo.toLocaleString()}</span>
+              </div>
+              ${saldo > 0 ? `<button onclick="abrirModalPago(${op.id})" class="mt-2 bg-green-600 text-white text-xs px-3 py-1.5 rounded hover:bg-green-700">Abonar Saldo</button>` : '<span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded">COMPLETADO</span>'}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- FLUJO DE CAJA PROYECTADO ---
+    function renderCajaMovimientos() {
+      const filtro = document.getElementById('filtro-caja-tipo').value;
+      let movimientos = [];
+      let totalSaldosPendientes = 0;
+
+      dbOperaciones.forEach(op => {
+        const abonadoOp = op.pagos.reduce((s, p) => s + p.monto, 0);
+        const saldoOp = op.total - abonadoOp;
+        if (saldoOp > 0) totalSaldosPendientes += saldoOp;
+
+        op.pagos.forEach((p, idx) => {
+          movimientos.push({
+            id: `ing-${op.id}-${idx}`, fecha: p.fecha, tipo: 'Ingreso Cliente',
+            concepto: `Cobro: ${op.clienta}`, medio: p.medio,
+            monto: p.monto, esIngreso: true
+          });
+        });
+      });
+
+      dbIngresosManuales.forEach(ing => {
+        movimientos.push({
+          id: `ing-man-${ing.id}`, fecha: ing.fecha, tipo: 'Ingreso Manual',
+          concepto: ing.concepto, medio: ing.medio, monto: ing.monto, esIngreso: true
+        });
+      });
+
+      dbGastos.forEach(g => {
+        movimientos.push({
+          id: `egr-${g.id}`, fecha: g.fecha, tipo: `Gasto ${g.tipo}`,
+          concepto: g.concepto, medio: g.medio, monto: g.monto, esIngreso: false
+        });
+      });
+
+      const totalIngresosCobrados = movimientos.filter(m => m.esIngreso).reduce((s, m) => s + m.monto, 0);
+      const totalEgresos = movimientos.filter(m => !m.esIngreso).reduce((s, m) => s + m.monto, 0);
+      const resultadoNetoProyectado = (totalIngresosCobrados + totalSaldosPendientes) - totalEgresos;
+
+      document.getElementById('caja-total-ingresos').innerText = `$${totalIngresosCobrados.toLocaleString()}`;
+      document.getElementById('caja-total-pendientes').innerText = `$${totalSaldosPendientes.toLocaleString()}`;
+      document.getElementById('caja-total-egresos').innerText = `$${totalEgresos.toLocaleString()}`;
+      document.getElementById('caja-resultado-neto').innerText = `$${resultadoNetoProyectado.toLocaleString()}`;
+
+      if (filtro === 'ingreso') movimientos = movimientos.filter(m => m.esIngreso);
+      if (filtro === 'egreso') movimientos = movimientos.filter(m => !m.esIngreso);
+
+      const tbody = document.getElementById('tabla-caja-body');
+      tbody.innerHTML = movimientos.map(m => `
+        <tr class="border-b hover:bg-gray-50 text-xs">
+          <td class="p-2.5 text-gray-500">${m.fecha}</td>
+          <td class="p-2.5"><span class="px-2 py-0.5 rounded font-semibold ${m.esIngreso ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${m.tipo}</span></td>
+          <td class="p-2.5 font-medium text-gray-800">${m.concepto}</td>
+          <td class="p-2.5"><span class="border px-1.5 py-0.5 rounded">${m.medio}</span></td>
+          <td class="p-2.5 font-bold ${m.esIngreso ? 'text-green-700' : 'text-red-600'}">${m.esIngreso ? '+' : '-'}$${m.monto.toLocaleString()}</td>
+        </tr>
+      `).join('');
+    }
+
+    // --- OPERACIONES DE EXCEL, ORDEN E HISTORIAL ---
     function procesarExcelCSV(e) {
       const file = e.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function(evt) {
         const lineas = evt.target.result.split('\n');
         let agregados = 0;
-
         for (let i = 1; i < lineas.length; i++) {
           const col = lineas[i].split(',');
           if (col.length >= 2 && col[0].trim() !== '') {
             dbProductos.push({
-              id: Date.now() + i,
-              codigo: col[0].trim().toUpperCase(),
-              nombre: col[1].trim(),
-              color: col[2] ? col[2].trim() : 'Otro',
-              categoria: col[3] ? col[3].trim() : 'Fiesta Largo',
-              modalidad: col[4] ? col[4].trim() : 'Alquiler',
-              precioVenta: parseFloat(col[5]) || 0,
-              precioAlquiler: parseFloat(col[6]) || 0,
-              talle: col[7] ? col[7].trim() : 'M',
-              busto: parseFloat(col[8]) || null,
-              cintura: parseFloat(col[9]) || null,
-              cadera: parseFloat(col[10]) || null,
-              largo: col[11] ? col[11].trim() : '',
-              estadoLimpieza: 'Disponible / Limpio'
+              id: Date.now() + i, codigo: col[0].trim().toUpperCase(), nombre: col[1].trim(),
+              color: col[2] ? col[2].trim() : 'Otro', categoria: col[3] ? col[3].trim() : 'Fiesta Largo',
+              modalidad: col[4] ? col[4].trim() : 'Alquiler', precioVenta: parseFloat(col[5]) || 0,
+              precioAlquiler: parseFloat(col[6]) || 0, talle: col[7] ? col[7].trim() : 'M',
+              busto: parseFloat(col[8]) || null, cintura: parseFloat(col[9]) || null, cadera: parseFloat(col[10]) || null,
+              largo: col[11] ? col[11].trim() : '', estadoLimpieza: 'Disponible / Limpio'
             });
             agregados++;
           }
@@ -639,11 +1018,9 @@
       reader.readAsText(file);
     }
 
-    // --- REGISTRO ORDEN ---
     function agregarProductoAOrden() {
       const busqueda = document.getElementById('buscar-codigo').value.trim().toLowerCase();
       if (!busqueda) return alert('Ingresa un código o nombre.');
-
       const producto = dbProductos.find(p => p.codigo.toLowerCase() === busqueda || p.nombre.toLowerCase().includes(busqueda));
       if (!producto) return alert('Producto no encontrado.');
 
@@ -675,7 +1052,7 @@
           <td class="p-2 font-medium">${item.nombre}</td>
           <td class="p-2"><span class="px-2 py-0.5 rounded text-xs bg-purple-100 text-purple-800 font-semibold">${item.color || '-'}</span></td>
           <td class="p-2 text-xs text-gray-500">Talle ${item.talle || '-'} (B:${item.busto || '-'}, C:${item.cintura || '-'}, Cd:${item.cadera || '-'})</td>
-          <td class="p-2"><span class="px-2 py-0.5 rounded text-xs ${item.modalidad === 'Venta' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">${item.modalidad}</span></td>
+          <td class="p-2"><span class="px-2 py-0.5 rounded text-xs font-bold ${item.modalidad === 'Venta' ? 'bg-red-100 text-red-800' : 'bg-purple-100 text-purple-800'}">${item.modalidad.toUpperCase()}</span></td>
           <td class="p-2 font-bold">$${item.precio.toLocaleString()}</td>
           <td class="p-2 text-center"><button onclick="removerItemOrden(${idx})" class="text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
         </tr>
@@ -731,6 +1108,15 @@
 
       const total = Math.max(0, subtotal + ajuste);
 
+      itemsOrdenActual.forEach(item => {
+        if (item.modalidad === 'Venta') {
+          dbProductos = dbProductos.filter(p => p.id !== item.id);
+        } else {
+          const p = dbProductos.find(prod => prod.id === item.id);
+          if (p) p.estadoLimpieza = '🔵 Alquilado / En Salón';
+        }
+      });
+
       const nuevaOp = {
         id: Date.now(), fechaRegistro: new Date().toLocaleDateString(),
         clienta, dni, telefono, domicilio, email, fechaEvento, observaciones,
@@ -754,110 +1140,30 @@
       
       renderTablaOrden();
       calcularTotales();
+      renderTablaStock();
       renderHistorial();
       renderCajaMovimientos();
-      actualizarAgendaDetalle();
+      renderCalendarioMensual();
+      actualizarAgendaDetalle(fechaEvento);
       alert('¡Operación guardada correctamente!');
       switchTab('historial');
     }
 
-    // --- CATÁLOGO, TALLES Y FILTROS POR COLOR ---
-    function renderTablaStock() {
-      const filtroColor = document.getElementById('filtro-stock-color').value;
-      const filtroTalle = document.getElementById('filtro-stock-talle').value;
+    function guardarIngresoManual() {
+      const concepto = document.getElementById('ingreso-concepto').value.trim();
+      const monto = parseFloat(document.getElementById('ingreso-monto').value) || 0;
+      const medio = document.getElementById('ingreso-medio').value;
 
-      let productosFiltrados = dbProductos;
+      if (!concepto || monto <= 0) return alert('Ingresa concepto y monto del ingreso.');
 
-      if (filtroColor !== 'todos') {
-        productosFiltrados = productosFiltrados.filter(p => (p.color || '').toLowerCase().includes(filtroColor.toLowerCase()));
-      }
-
-      if (filtroTalle !== 'todos') {
-        productosFiltrados = productosFiltrados.filter(p => (p.talle || '').toUpperCase() === filtroTalle.toUpperCase());
-      }
-
-      const tbody = document.getElementById('tabla-stock-body');
-      tbody.innerHTML = productosFiltrados.map(p => `
-        <tr class="hover:bg-gray-50 border-b">
-          <td class="p-3">
-            <div class="flex items-center gap-2">
-              ${p.foto ? `<img src="${p.foto}" class="w-10 h-10 rounded-lg object-cover border">` : '<div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-400">Sin foto</div>'}
-              <span class="font-bold text-purple-900">${p.codigo}</span>
-            </div>
-          </td>
-          <td class="p-3 font-medium">${p.nombre}<br><span class="text-xs text-gray-400">${p.categoria}</span></td>
-          <td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold bg-purple-100 text-purple-900">${p.color || '-'}</span></td>
-          <td class="p-3 text-xs bg-purple-50/50 rounded-lg">
-            <div><strong class="text-purple-900">Talle:</strong> ${p.talle || '-'}</div>
-            <div class="text-gray-600">Busto: ${p.busto || '-'} cm | Cintura: ${p.cintura || '-'} cm | Cadera: ${p.cadera || '-'} cm</div>
-            <div class="text-gray-500 italic">${p.largo || ''}</div>
-          </td>
-          <td class="p-3"><span class="px-2 py-1 rounded text-xs font-semibold ${p.modalidad === 'Venta' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">${p.modalidad}</span></td>
-          <td class="p-3">$${p.precioVenta.toLocaleString()}</td>
-          <td class="p-3 font-semibold text-purple-900">$${p.precioAlquiler.toLocaleString()}</td>
-          <td class="p-3"><span class="text-xs px-2 py-1 rounded-full font-medium ${p.estadoLimpieza.includes('Disponible') ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">${p.estadoLimpieza}</span></td>
-          <td class="p-3 text-center">
-            <button onclick="eliminarProducto(${p.id})" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-          </td>
-        </tr>
-      `).join('');
-      lucide.createIcons();
-    }
-
-    function abrirModalNuevoProducto() {
-      document.getElementById('prod-codigo').value = '';
-      document.getElementById('prod-nombre').value = '';
-      document.getElementById('prod-foto').value = '';
-      document.getElementById('prod-talle').value = '';
-      document.getElementById('prod-busto').value = '';
-      document.getElementById('prod-cintura').value = '';
-      document.getElementById('prod-cadera').value = '';
-      document.getElementById('prod-largo').value = '';
-      document.getElementById('prod-precio-venta').value = '';
-      document.getElementById('prod-precio-alquiler').value = '';
-      document.getElementById('modal-producto').classList.remove('hidden');
-    }
-
-    function cerrarModalProducto() {
-      document.getElementById('modal-producto').classList.add('hidden');
-    }
-
-    function guardarProducto() {
-      const codigo = document.getElementById('prod-codigo').value.trim().toUpperCase();
-      const nombre = document.getElementById('prod-nombre').value.trim();
-      const color = document.getElementById('prod-color').value;
-
-      if (!codigo || !nombre) return alert('Ingresa código y nombre del producto.');
-
-      dbProductos.push({
-        id: Date.now(), codigo, nombre, color,
-        foto: document.getElementById('prod-foto').value.trim(),
-        talle: document.getElementById('prod-talle').value.trim(),
-        busto: parseFloat(document.getElementById('prod-busto').value) || null,
-        cintura: parseFloat(document.getElementById('prod-cintura').value) || null,
-        cadera: parseFloat(document.getElementById('prod-cadera').value) || null,
-        largo: document.getElementById('prod-largo').value.trim(),
-        categoria: document.getElementById('prod-categoria').value,
-        modalidad: document.getElementById('prod-modalidad').value,
-        precioVenta: parseFloat(document.getElementById('prod-precio-venta').value) || 0,
-        precioAlquiler: parseFloat(document.getElementById('prod-precio-alquiler').value) || 0,
-        estadoLimpieza: document.getElementById('prod-estado-limpieza').value
-      });
-
+      dbIngresosManuales.push({ id: Date.now(), fecha: new Date().toLocaleDateString(), concepto, monto, medio });
       guardarDB();
-      renderTablaStock();
-      cerrarModalProducto();
+      document.getElementById('ingreso-concepto').value = '';
+      document.getElementById('ingreso-monto').value = '';
+      renderCajaMovimientos();
+      alert('Ingreso registrado en caja.');
     }
 
-    function eliminarProducto(id) {
-      if (confirm('¿Eliminar prenda del stock?')) {
-        dbProductos = dbProductos.filter(p => p.id !== id);
-        guardarDB();
-        renderTablaStock();
-      }
-    }
-
-    // --- COBROS Y GASTOS ---
     function guardarGasto() {
       const concepto = document.getElementById('gasto-concepto').value.trim();
       const monto = parseFloat(document.getElementById('gasto-monto').value) || 0;
@@ -872,107 +1178,6 @@
       document.getElementById('gasto-monto').value = '';
       renderCajaMovimientos();
       alert('Gasto registrado.');
-    }
-
-    function renderCajaMovimientos() {
-      const filtro = document.getElementById('filtro-caja-tipo').value;
-      let movimientos = [];
-
-      dbOperaciones.forEach(op => {
-        op.pagos.forEach((p, idx) => {
-          movimientos.push({
-            id: `ing-${op.id}-${idx}`, fecha: p.fecha, tipo: 'Ingreso',
-            concepto: `Cobro: ${op.clienta} (DNI ${op.dni || 'S/D'})`, medio: p.medio,
-            monto: p.monto, esIngreso: true, opId: op.id, pagoIdx: idx, facturado: p.facturado || false
-          });
-        });
-      });
-
-      dbGastos.forEach(g => {
-        movimientos.push({
-          id: `egr-${g.id}`, fecha: g.fecha, tipo: `Gasto ${g.tipo}`,
-          concepto: g.concepto, medio: g.medio, monto: g.monto, esIngreso: false, facturado: g.facturado
-        });
-      });
-
-      const totalIngresos = movimientos.filter(m => m.esIngreso).reduce((s, m) => s + m.monto, 0);
-      const totalEgresos = movimientos.filter(m => !m.esIngreso).reduce((s, m) => s + m.monto, 0);
-      const ef = movimientos.filter(m => m.esIngreso && m.medio === 'Efectivo').reduce((s, m) => s + m.monto, 0);
-      const tr = movimientos.filter(m => m.esIngreso && m.medio === 'Transferencia').reduce((s, m) => s + m.monto, 0);
-      const ta = movimientos.filter(m => m.esIngreso && m.medio === 'Tarjeta').reduce((s, m) => s + m.monto, 0);
-
-      document.getElementById('caja-total-ingresos').innerText = `$${totalIngresos.toLocaleString()}`;
-      document.getElementById('caja-total-egresos').innerText = `$${totalEgresos.toLocaleString()}`;
-      document.getElementById('caja-ganancia-neta').innerText = `$${(totalIngresos - totalEgresos).toLocaleString()}`;
-      document.getElementById('caja-efectivo').innerText = `$${ef.toLocaleString()}`;
-      document.getElementById('caja-transf').innerText = `$${tr.toLocaleString()}`;
-      document.getElementById('caja-tarjeta').innerText = `$${ta.toLocaleString()}`;
-
-      if (filtro === 'ingreso') movimientos = movimientos.filter(m => m.esIngreso);
-      if (filtro === 'egreso') movimientos = movimientos.filter(m => !m.esIngreso);
-
-      const tbody = document.getElementById('tabla-caja-body');
-      tbody.innerHTML = movimientos.map(m => `
-        <tr class="border-b hover:bg-gray-50">
-          <td class="p-2.5 text-xs text-gray-500">${m.fecha}</td>
-          <td class="p-2.5"><span class="px-2 py-0.5 rounded text-xs font-semibold ${m.esIngreso ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${m.tipo}</span></td>
-          <td class="p-2.5 font-medium text-gray-800">${m.concepto}</td>
-          <td class="p-2.5 text-xs"><span class="border px-1.5 py-0.5 rounded">${m.medio}</span></td>
-          <td class="p-2.5 font-bold ${m.esIngreso ? 'text-green-700' : 'text-red-600'}">${m.esIngreso ? '+' : '-'}$${m.monto.toLocaleString()}</td>
-          <td class="p-2.5 text-center">
-            ${m.esIngreso ? `
-              <button onclick="toggleFacturado(${m.opId}, ${m.pagoIdx})" class="text-xs px-2 py-1 rounded font-bold ${m.facturado ? 'bg-blue-100 text-blue-800 border border-blue-300' : 'bg-gray-100 text-gray-500 border'}">
-                ${m.facturado ? '🧾 Facturado' : '⚪ Pendiente'}
-              </button>
-            ` : '<span class="text-xs text-gray-400">Reg.</span>'}
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function toggleFacturado(opId, pagoIdx) {
-      const op = dbOperaciones.find(o => o.id === opId);
-      if (op && op.pagos[pagoIdx]) {
-        op.pagos[pagoIdx].facturado = !op.pagos[pagoIdx].facturado;
-        guardarDB();
-        renderCajaMovimientos();
-      }
-    }
-
-    // --- AGENDA & HISTORIAL ---
-    function actualizarAgendaDetalle() {
-      const fecha = document.getElementById('filtro-fecha-agenda').value;
-      const eventos = dbOperaciones.filter(op => op.fechaEvento === fecha);
-
-      document.getElementById('agenda-contador-dia').innerText = eventos.length;
-      document.getElementById('agenda-titulo-fecha').innerText = `Eventos para el ${fecha || 'Día'}`;
-
-      const cont = document.getElementById('agenda-lista-eventos');
-      if (eventos.length === 0) {
-        cont.innerHTML = `<div class="p-6 text-center text-gray-400 italic border rounded-lg">No hay alquileres agendados para esta fecha.</div>`;
-        return;
-      }
-
-      cont.innerHTML = eventos.map(op => {
-        const abonado = op.pagos.reduce((s, p) => s + p.monto, 0);
-        const saldo = op.total - abonado;
-        return `
-          <div class="border rounded-xl p-4 bg-gray-50 flex flex-col md:flex-row justify-between gap-4">
-            <div>
-              <span class="font-bold text-base text-purple-900">${op.clienta}</span> <span class="text-xs text-gray-500">(DNI: ${op.dni || 'S/D'} - Tel: ${op.telefono})</span>
-              <p class="text-xs text-gray-600 mt-1"><strong>Prendas:</strong> ${op.items.map(i => i.nombre + ' [' + i.codigo + ']').join(', ')}</p>
-              ${op.observaciones ? `<p class="text-xs text-amber-800 bg-amber-50 p-2 rounded mt-2"><strong>Ajustes/Obs:</strong> ${op.observaciones}</p>` : ''}
-            </div>
-            <div class="text-right flex flex-col justify-between">
-              <div>
-                <span class="text-xs text-gray-500 block">Saldo Pendiente</span>
-                <span class="text-base font-bold ${saldo > 0 ? 'text-red-600' : 'text-green-600'}">$${saldo.toLocaleString()}</span>
-              </div>
-              ${saldo > 0 ? `<button onclick="abrirModalPago(${op.id})" class="mt-2 bg-green-600 text-white text-xs px-3 py-1.5 rounded hover:bg-green-700">Abonar Saldo</button>` : '<span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded">COMPLETADO</span>'}
-            </div>
-          </div>
-        `;
-      }).join('');
     }
 
     function renderHistorial() {
@@ -1020,7 +1225,7 @@
         guardarDB();
         renderHistorial();
         renderCajaMovimientos();
-        actualizarAgendaDetalle();
+        actualizarAgendaDetalle(fechaSeleccionadaAgenda);
         cerrarModalPago();
         alert('Cobro registrado exitosamente.');
       }

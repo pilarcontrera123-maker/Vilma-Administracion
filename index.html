@@ -261,7 +261,7 @@
           </div>
         </div>
 
-        <!-- FILTROS RÁPIDOS POR COLOR, TALLE Y ESTADO -->
+        <!-- FILTROS RÁPIDOS -->
         <div class="bg-purple-50 p-4 rounded-xl border border-purple-200 flex flex-wrap gap-4 items-center text-xs font-semibold">
           <span class="text-purple-900 flex items-center gap-1"><i data-lucide="filter" class="w-4 h-4"></i> FILTRAR STOCK POR:</span>
           
@@ -355,6 +355,23 @@
 
       <!-- SECCIÓN 4: COBROS Y CAJA PROYECTADA -->
       <section id="sec-cobros" class="hidden space-y-6">
+        
+        <!-- DASHBOARD Y ACCIONES DE EXPORTACIÓN -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+          <div>
+            <h2 class="text-lg font-bold text-gray-800">Resumen y Flujo de Caja Proyectado</h2>
+            <p class="text-xs text-gray-500">Balance en tiempo real de ingresos cobrados, pendientes y egresos</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="exportarExcelResumenMensual()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1 shadow">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Exportar Excel (CSV)
+            </button>
+            <button onclick="descargarReportePDF()" class="bg-red-700 hover:bg-red-800 text-white px-3 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1 shadow">
+              <i data-lucide="file-text" class="w-4 h-4"></i> Exportar Reporte PDF
+            </button>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-green-500">
             <span class="text-xs text-gray-500 font-semibold uppercase">1. Ingresos Cobrados</span>
@@ -376,14 +393,20 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          <!-- FORMULARIO INGRESO MANUAL -->
           <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
             <h3 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
               <i data-lucide="plus-circle" class="text-green-600"></i> Registrar Ingreso Manual / Aporte
             </h3>
             <div class="space-y-3 text-sm">
               <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1">Fecha del Movimiento</label>
+                <input type="date" id="ingreso-fecha" class="w-full border p-2 rounded-lg text-xs font-medium">
+              </div>
+              <div>
                 <label class="block text-xs font-semibold text-gray-600 mb-1">Concepto / Detalle</label>
-                <input type="text" id="ingreso-concepto" placeholder="Ej: Aporte de caja inicial, Venta extra..." class="w-full border p-2 rounded-lg">
+                <input type="text" id="ingreso-concepto" placeholder="Ej: Aporte inicial, Venta extra..." class="w-full border p-2 rounded-lg">
               </div>
               <div>
                 <label class="block text-xs font-semibold text-gray-600 mb-1">Monto ($)</label>
@@ -403,11 +426,16 @@
             </div>
           </div>
 
+          <!-- FORMULARIO GASTO / EGRESO -->
           <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
             <h3 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
               <i data-lucide="minus-circle" class="text-red-500"></i> Registrar Gasto / Egreso
             </h3>
             <div class="space-y-3 text-sm">
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1">Fecha del Movimiento</label>
+                <input type="date" id="gasto-fecha" class="w-full border p-2 rounded-lg text-xs font-medium">
+              </div>
               <div>
                 <label class="block text-xs font-semibold text-gray-600 mb-1">Concepto / Detalle</label>
                 <input type="text" id="gasto-concepto" placeholder="Ej: Luz, Tintorería, Hilos" class="w-full border p-2 rounded-lg">
@@ -437,6 +465,7 @@
             </div>
           </div>
 
+          <!-- TABLA DE MOVIMIENTOS CON EDITAR Y ELIMINAR -->
           <div class="md:col-span-2 lg:col-span-1 bg-white p-6 rounded-xl shadow-md border border-gray-200 space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
               <h3 class="text-base font-bold text-gray-800">Flujo de Caja Realizado</h3>
@@ -451,17 +480,17 @@
               <table class="w-full text-sm text-left text-gray-600">
                 <thead class="bg-gray-100 text-xs uppercase text-gray-700">
                   <tr>
-                    <th class="p-2.5">Fecha</th>
-                    <th class="p-2.5">Tipo</th>
-                    <th class="p-2.5">Concepto</th>
-                    <th class="p-2.5">Medio</th>
-                    <th class="p-2.5">Monto</th>
+                    <th class="p-2">Fecha</th>
+                    <th class="p-2">Concepto</th>
+                    <th class="p-2">Monto</th>
+                    <th class="p-2 text-center">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="tabla-caja-body" class="divide-y divide-gray-200"></tbody>
               </table>
             </div>
           </div>
+
         </div>
       </section>
 
@@ -492,6 +521,47 @@
       </section>
 
     </main>
+
+    <!-- MODAL EDITAR MOVIMIENTO DE CAJA -->
+    <div id="modal-edit-movimiento" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4">
+        <div class="flex justify-between items-center border-b pb-3">
+          <h3 class="text-lg font-bold text-gray-800">Editar Movimiento de Caja</h3>
+          <button onclick="cerrarModalEditMovimiento()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x"></i></button>
+        </div>
+
+        <input type="hidden" id="edit-mov-id">
+        <input type="hidden" id="edit-mov-origen">
+
+        <div class="space-y-3 text-sm">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Fecha</label>
+            <input type="date" id="edit-mov-fecha" class="w-full border p-2 rounded-lg text-xs font-medium">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Concepto / Detalle</label>
+            <input type="text" id="edit-mov-concepto" class="w-full border p-2 rounded-lg">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Monto ($)</label>
+            <input type="number" id="edit-mov-monto" class="w-full border p-2 rounded-lg font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Medio de Pago</label>
+            <select id="edit-mov-medio" class="w-full border p-2 rounded-lg">
+              <option value="Efectivo">Efectivo</option>
+              <option value="Transferencia">Transferencia</option>
+              <option value="Tarjeta">Tarjeta</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-3 border-t">
+          <button onclick="cerrarModalEditMovimiento()" class="px-4 py-2 border rounded-lg text-sm text-gray-600">Cancelar</button>
+          <button onclick="guardarEdicionMovimiento()" class="px-4 py-2 bg-purple-700 text-white rounded-lg text-sm font-semibold hover:bg-purple-800">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
 
     <!-- MODAL CARGAR / EDITAR VESTIDO -->
     <div id="modal-producto" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
@@ -628,6 +698,9 @@
     let fechaSeleccionadaAgenda = new Date().toISOString().split('T')[0];
 
     document.addEventListener('DOMContentLoaded', () => {
+      const hoy = new Date().toISOString().split('T')[0];
+      if (document.getElementById('ingreso-fecha')) document.getElementById('ingreso-fecha').value = hoy;
+      if (document.getElementById('gasto-fecha')) document.getElementById('gasto-fecha').value = hoy;
       lucide.createIcons();
     });
 
@@ -670,25 +743,276 @@
       document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-700 text-white flex items-center gap-1";
       if (tab === 'agenda') renderCalendarioMensual();
       if (tab === 'inventario') renderTablaStock();
+      if (tab === 'cobros') renderCajaMovimientos();
       lucide.createIcons();
     }
 
-    // --- TINTORERÍA & LAVADO ---
+    // --- FLUJO DE CAJA CON FECHAS, EDITAR Y ELIMINAR ---
+    function renderCajaMovimientos() {
+      const filtro = document.getElementById('filtro-caja-tipo').value;
+      let movimientos = [];
+      let totalSaldosPendientes = 0;
+
+      // Movimientos de Operaciones
+      dbOperaciones.forEach(op => {
+        const abonadoOp = op.pagos.reduce((s, p) => s + p.monto, 0);
+        const saldoOp = op.total - abonadoOp;
+        if (saldoOp > 0) totalSaldosPendientes += saldoOp;
+
+        op.pagos.forEach((p, idx) => {
+          movimientos.push({
+            id: op.id, subIdx: idx, origen: 'cliente', fecha: p.fecha, tipo: 'Ingreso Cliente',
+            concepto: `Cobro: ${op.clienta}`, medio: p.medio, monto: p.monto, esIngreso: true
+          });
+        });
+      });
+
+      // Ingresos Manuales
+      dbIngresosManuales.forEach(ing => {
+        movimientos.push({
+          id: ing.id, origen: 'manual', fecha: ing.fecha, tipo: 'Ingreso Manual',
+          concepto: ing.concepto, medio: ing.medio, monto: ing.monto, esIngreso: true
+        });
+      });
+
+      // Gastos
+      dbGastos.forEach(g => {
+        movimientos.push({
+          id: g.id, origen: 'gasto', fecha: g.fecha, tipo: `Gasto ${g.tipo}`,
+          concepto: g.concepto, medio: g.medio, monto: g.monto, esIngreso: false
+        });
+      });
+
+      const totalIngresosCobrados = movimientos.filter(m => m.esIngreso).reduce((s, m) => s + m.monto, 0);
+      const totalEgresos = movimientos.filter(m => !m.esIngreso).reduce((s, m) => s + m.monto, 0);
+      const resultadoNetoProyectado = (totalIngresosCobrados + totalSaldosPendientes) - totalEgresos;
+
+      document.getElementById('caja-total-ingresos').innerText = `$${totalIngresosCobrados.toLocaleString()}`;
+      document.getElementById('caja-total-pendientes').innerText = `$${totalSaldosPendientes.toLocaleString()}`;
+      document.getElementById('caja-total-egresos').innerText = `$${totalEgresos.toLocaleString()}`;
+      document.getElementById('caja-resultado-neto').innerText = `$${resultadoNetoProyectado.toLocaleString()}`;
+
+      if (filtro === 'ingreso') movimientos = movimientos.filter(m => m.esIngreso);
+      if (filtro === 'egreso') movimientos = movimientos.filter(m => !m.esIngreso);
+
+      const tbody = document.getElementById('tabla-caja-body');
+      tbody.innerHTML = movimientos.map(m => `
+        <tr class="border-b hover:bg-gray-50 text-xs">
+          <td class="p-2 text-gray-500 font-medium">${m.fecha}</td>
+          <td class="p-2 font-medium text-gray-800">${m.concepto}<br><span class="text-[10px] text-gray-400">${m.medio}</span></td>
+          <td class="p-2 font-bold ${m.esIngreso ? 'text-green-700' : 'text-red-600'}">${m.esIngreso ? '+' : '-'}$${m.monto.toLocaleString()}</td>
+          <td class="p-2 text-center space-x-1">
+            <button onclick="editarMovimientoModal('${m.origen}', ${m.id}, ${m.subIdx !== undefined ? m.subIdx : 'null'})" class="text-blue-600 hover:text-blue-800 p-1" title="Editar"><i data-lucide="edit" class="w-3.5 h-3.5"></i></button>
+            <button onclick="eliminarMovimiento('${m.origen}', ${m.id}, ${m.subIdx !== undefined ? m.subIdx : 'null'})" class="text-red-500 hover:text-red-700 p-1" title="Eliminar"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function editarMovimientoModal(origen, id, subIdx) {
+      document.getElementById('edit-mov-origen').value = `${origen}|${id}|${subIdx}`;
+      let concepto = '', monto = 0, medio = 'Efectivo', fecha = new Date().toISOString().split('T')[0];
+
+      if (origen === 'cliente') {
+        const op = dbOperaciones.find(o => o.id === id);
+        if (op && op.pagos[subIdx]) {
+          concepto = `Cobro: ${op.clienta}`;
+          monto = op.pagos[subIdx].monto;
+          medio = op.pagos[subIdx].medio;
+          fecha = op.pagos[subIdx].fecha;
+        }
+      } else if (origen === 'manual') {
+        const ing = dbIngresosManuales.find(i => i.id === id);
+        if (ing) { concepto = ing.concepto; monto = ing.monto; medio = ing.medio; fecha = ing.fecha; }
+      } else if (origen === 'gasto') {
+        const g = dbGastos.find(x => x.id === id);
+        if (g) { concepto = g.concepto; monto = g.monto; medio = g.medio; fecha = g.fecha; }
+      }
+
+      document.getElementById('edit-mov-fecha').value = fecha;
+      document.getElementById('edit-mov-concepto').value = concepto;
+      document.getElementById('edit-mov-monto').value = monto;
+      document.getElementById('edit-mov-medio').value = medio;
+      document.getElementById('modal-edit-movimiento').classList.remove('hidden');
+    }
+
+    function cerrarModalEditMovimiento() {
+      document.getElementById('modal-edit-movimiento').classList.add('hidden');
+    }
+
+    function guardarEdicionMovimiento() {
+      const [origen, idStr, subIdxStr] = document.getElementById('edit-mov-origen').value.split('|');
+      const id = parseInt(idStr);
+      const subIdx = subIdxStr !== 'null' ? parseInt(subIdxStr) : null;
+
+      const fecha = document.getElementById('edit-mov-fecha').value;
+      const concepto = document.getElementById('edit-mov-concepto').value.trim();
+      const monto = parseFloat(document.getElementById('edit-mov-monto').value) || 0;
+      const medio = document.getElementById('edit-mov-medio').value;
+
+      if (monto <= 0) return alert('Ingresa un monto válido.');
+
+      if (origen === 'cliente') {
+        const op = dbOperaciones.find(o => o.id === id);
+        if (op && op.pagos[subIdx]) {
+          op.pagos[subIdx].fecha = fecha;
+          op.pagos[subIdx].monto = monto;
+          op.pagos[subIdx].medio = medio;
+        }
+      } else if (origen === 'manual') {
+        const ing = dbIngresosManuales.find(i => i.id === id);
+        if (ing) { ing.fecha = fecha; ing.concepto = concepto; ing.monto = monto; ing.medio = medio; }
+      } else if (origen === 'gasto') {
+        const g = dbGastos.find(x => x.id === id);
+        if (g) { g.fecha = fecha; g.concepto = concepto; g.monto = monto; g.medio = medio; }
+      }
+
+      guardarDB();
+      renderCajaMovimientos();
+      renderHistorial();
+      cerrarModalEditMovimiento();
+      alert('Movimiento actualizado.');
+    }
+
+    function eliminarMovimiento(origen, id, subIdx) {
+      if (!confirm('¿Seguro que deseas eliminar este registro de caja?')) return;
+
+      if (origen === 'cliente') {
+        const op = dbOperaciones.find(o => o.id === id);
+        if (op && op.pagos[subIdx] !== undefined) {
+          op.pagos.splice(subIdx, 1);
+        }
+      } else if (origen === 'manual') {
+        dbIngresosManuales = dbIngresosManuales.filter(i => i.id !== id);
+      } else if (origen === 'gasto') {
+        dbGastos = dbGastos.filter(g => g.id !== id);
+      }
+
+      guardarDB();
+      renderCajaMovimientos();
+      renderHistorial();
+      alert('Registro eliminado.');
+    }
+
+    // --- REGISTRAR CON FECHA ---
+    function guardarIngresoManual() {
+      const fecha = document.getElementById('ingreso-fecha').value || new Date().toISOString().split('T')[0];
+      const concepto = document.getElementById('ingreso-concepto').value.trim();
+      const monto = parseFloat(document.getElementById('ingreso-monto').value) || 0;
+      const medio = document.getElementById('ingreso-medio').value;
+
+      if (!concepto || monto <= 0) return alert('Ingresa concepto y monto del ingreso.');
+
+      dbIngresosManuales.push({ id: Date.now(), fecha, concepto, monto, medio });
+      guardarDB();
+      document.getElementById('ingreso-concepto').value = '';
+      document.getElementById('ingreso-monto').value = '';
+      renderCajaMovimientos();
+      alert('Ingreso registrado en caja.');
+    }
+
+    function guardarGasto() {
+      const fecha = document.getElementById('gasto-fecha').value || new Date().toISOString().split('T')[0];
+      const concepto = document.getElementById('gasto-concepto').value.trim();
+      const monto = parseFloat(document.getElementById('gasto-monto').value) || 0;
+      const tipo = document.getElementById('gasto-tipo').value;
+      const medio = document.getElementById('gasto-medio').value;
+
+      if (!concepto || monto <= 0) return alert('Ingresa concepto y monto del gasto.');
+
+      dbGastos.push({ id: Date.now(), fecha, concepto, tipo, monto, medio, facturado: true });
+      guardarDB();
+      document.getElementById('gasto-concepto').value = '';
+      document.getElementById('gasto-monto').value = '';
+      renderCajaMovimientos();
+      alert('Gasto registrado.');
+    }
+
+    // --- EXPORTAR EXCEL Y DESCARGAR PDF ---
+    function exportarExcelResumenMensual() {
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "FECHA,TIPO,CONCEPTO,MEDIO,MONTO\n";
+
+      dbOperaciones.forEach(op => {
+        op.pagos.forEach(p => {
+          csvContent += `"${p.fecha}","Ingreso Cliente","Cobro ${op.clienta}","${p.medio}","${p.monto}"\n`;
+        });
+      });
+
+      dbIngresosManuales.forEach(i => {
+        csvContent += `"${i.fecha}","Ingreso Manual","${i.concepto}","${i.medio}","${i.monto}"\n`;
+      });
+
+      dbGastos.forEach(g => {
+        csvContent += `"${g.fecha}","Gasto ${g.tipo}","${g.concepto}","${g.medio}","-${g.monto}"\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `Vilma_Resumen_Caja_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function descargarReportePDF() {
+      const ing = document.getElementById('caja-total-ingresos').innerText;
+      const pend = document.getElementById('caja-total-pendientes').innerText;
+      const egr = document.getElementById('caja-total-egresos').innerText;
+      const neto = document.getElementById('caja-resultado-neto').innerText;
+
+      const ventana = window.open('', '', 'width=800,height=600');
+      ventana.document.write(`
+        <html>
+        <head>
+          <title>Reporte de Caja - Vilma Vestidos</title>
+          <style>
+            body { font-family: sans-serif; padding: 30px; color: #333; }
+            h1 { color: #581c87; border-bottom: 2px solid #581c87; padding-bottom: 5px; }
+            .box { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+            .grid { display: flex; justify-content: space-between; margin-bottom: 15px; }
+            .title { font-weight: bold; font-size: 12px; text-transform: uppercase; color: #666; }
+            .val { font-size: 20px; font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          <h1>VILMA VESTIDOS - Reporte de Flujo de Caja</h1>
+          <p><strong>Fecha de Emisión:</strong> ${new Date().toLocaleDateString()}</p>
+          
+          <div class="box">
+            <div class="grid">
+              <div><div class="title">1. Ingresos Cobrados</div><div class="val" style="color: green;">${ing}</div></div>
+              <div><div class="title">2. Saldos a Cobrar</div><div class="val" style="color: orange;">${pend}</div></div>
+              <div><div class="title">3. Egresos / Gastos</div><div class="val" style="color: red;">${egr}</div></div>
+            </div>
+            <hr>
+            <div style="margin-top: 15px;">
+              <div class="title">📊 Resultado Neto Proyectado</div>
+              <div class="val" style="color: #581c87; font-size: 26px;">${neto}</div>
+            </div>
+          </div>
+
+          <h3>Detalle de Registros Realizados</h3>
+          <p>Para ver el desglose itemizado prenda por prenda, consulta la planilla Excel CSV adjunta o el panel del sistema.</p>
+          <script>window.print();<\/script>
+        </body>
+        </html>
+      `);
+      ventana.document.close();
+    }
+
+    // --- TINTORERÍA Y STOCK ---
     function toggleResumenTintoreria() {
-      const p = document.getElementById('panel-lista-tintoreria');
-      p.classList.toggle('hidden');
+      document.getElementById('panel-lista-tintoreria').classList.toggle('hidden');
     }
 
     function cambiarEstadoRápido(id, nuevoEstado) {
       const p = dbProductos.find(prod => prod.id === id);
-      if (p) {
-        p.estadoLimpieza = nuevoEstado;
-        guardarDB();
-        renderTablaStock();
-      }
+      if (p) { p.estadoLimpieza = nuevoEstado; guardarDB(); renderTablaStock(); }
     }
 
-    // --- STOCK & TABLA ---
     function renderTablaStock() {
       const filtroColor = document.getElementById('filtro-stock-color').value;
       const filtroTalle = document.getElementById('filtro-stock-talle').value;
@@ -696,17 +1020,10 @@
 
       let productosFiltrados = dbProductos;
 
-      if (filtroColor !== 'todos') {
-        productosFiltrados = productosFiltrados.filter(p => (p.color || '').toLowerCase().includes(filtroColor.toLowerCase()));
-      }
-      if (filtroTalle !== 'todos') {
-        productosFiltrados = productosFiltrados.filter(p => (p.talle || '').toUpperCase() === filtroTalle.toUpperCase());
-      }
-      if (filtroEstado !== 'todos') {
-        productosFiltrados = productosFiltrados.filter(p => p.estadoLimpieza === filtroEstado);
-      }
+      if (filtroColor !== 'todos') productosFiltrados = productosFiltrados.filter(p => (p.color || '').toLowerCase().includes(filtroColor.toLowerCase()));
+      if (filtroTalle !== 'todos') productosFiltrados = productosFiltrados.filter(p => (p.talle || '').toUpperCase() === filtroTalle.toUpperCase());
+      if (filtroEstado !== 'todos') productosFiltrados = productosFiltrados.filter(p => p.estadoLimpieza === filtroEstado);
 
-      // Actualizar contador de tintorería
       const pendientesLavar = dbProductos.filter(p => p.estadoLimpieza === 'En Tintorería');
       document.getElementById('contador-pendientes-lavar').innerText = `${pendientesLavar.length} Prendas`;
 
@@ -801,9 +1118,7 @@
       document.getElementById('modal-producto').classList.remove('hidden');
     }
 
-    function cerrarModalProducto() {
-      document.getElementById('modal-producto').classList.add('hidden');
-    }
+    function cerrarModalProducto() { document.getElementById('modal-producto').classList.add('hidden'); }
 
     function guardarProducto() {
       const editId = document.getElementById('edit-prod-id').value;
@@ -829,11 +1144,9 @@
       };
 
       if (editId) {
-        // Editar existente
         const idx = dbProductos.findIndex(p => p.id === parseInt(editId));
         if (idx !== -1) dbProductos[idx] = { ...dbProductos[idx], ...datosPrenda };
       } else {
-        // Cargar nuevo
         dbProductos.push({ id: Date.now(), ...datosPrenda });
       }
 
@@ -850,7 +1163,7 @@
       }
     }
 
-    // --- CALENDARIO MENSUAL ---
+    // --- CALENDARIO Y OPERACIONES ---
     function renderCalendarioMensual() {
       const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
       document.getElementById('agenda-nombre-mes').innerText = `${meses[mesAgendaActual]} ${anioAgendaActual}`;
@@ -861,9 +1174,7 @@
       const grid = document.getElementById('grid-calendario-dias');
       grid.innerHTML = '';
 
-      for (let i = 0; i < primerDia; i++) {
-        grid.innerHTML += `<div class="p-2 border-r border-b bg-gray-100/50 min-h-[70px]"></div>`;
-      }
+      for (let i = 0; i < primerDia; i++) grid.innerHTML += `<div class="p-2 border-r border-b bg-gray-100/50 min-h-[70px]"></div>`;
 
       for (let d = 1; d <= totalDias; d++) {
         const dStr = d < 10 ? `0${d}` : `${d}`;
@@ -876,11 +1187,7 @@
         grid.innerHTML += `
           <div onclick="seleccionarDiaAgenda('${fechaIso}')" class="p-1 border-r border-b min-h-[70px] cursor-pointer hover:bg-purple-50 transition text-left relative ${esSeleccionado ? 'bg-purple-100 ring-2 ring-purple-600 z-10' : 'bg-white'}">
             <span class="text-xs font-bold ${esSeleccionado ? 'text-purple-900' : 'text-gray-700'}">${d}</span>
-            ${eventosDelDia.length > 0 ? `
-              <div class="mt-1 bg-purple-800 text-white text-[10px] font-bold px-1 py-0.5 rounded flex items-center justify-between">
-                <span>${eventosDelDia.length} Alq.</span>
-              </div>
-            ` : ''}
+            ${eventosDelDia.length > 0 ? `<div class="mt-1 bg-purple-800 text-white text-[10px] font-bold px-1 py-0.5 rounded"><span>${eventosDelDia.length} Alq.</span></div>` : ''}
           </div>
         `;
       }
@@ -931,65 +1238,6 @@
       }).join('');
     }
 
-    // --- FLUJO DE CAJA PROYECTADO ---
-    function renderCajaMovimientos() {
-      const filtro = document.getElementById('filtro-caja-tipo').value;
-      let movimientos = [];
-      let totalSaldosPendientes = 0;
-
-      dbOperaciones.forEach(op => {
-        const abonadoOp = op.pagos.reduce((s, p) => s + p.monto, 0);
-        const saldoOp = op.total - abonadoOp;
-        if (saldoOp > 0) totalSaldosPendientes += saldoOp;
-
-        op.pagos.forEach((p, idx) => {
-          movimientos.push({
-            id: `ing-${op.id}-${idx}`, fecha: p.fecha, tipo: 'Ingreso Cliente',
-            concepto: `Cobro: ${op.clienta}`, medio: p.medio,
-            monto: p.monto, esIngreso: true
-          });
-        });
-      });
-
-      dbIngresosManuales.forEach(ing => {
-        movimientos.push({
-          id: `ing-man-${ing.id}`, fecha: ing.fecha, tipo: 'Ingreso Manual',
-          concepto: ing.concepto, medio: ing.medio, monto: ing.monto, esIngreso: true
-        });
-      });
-
-      dbGastos.forEach(g => {
-        movimientos.push({
-          id: `egr-${g.id}`, fecha: g.fecha, tipo: `Gasto ${g.tipo}`,
-          concepto: g.concepto, medio: g.medio, monto: g.monto, esIngreso: false
-        });
-      });
-
-      const totalIngresosCobrados = movimientos.filter(m => m.esIngreso).reduce((s, m) => s + m.monto, 0);
-      const totalEgresos = movimientos.filter(m => !m.esIngreso).reduce((s, m) => s + m.monto, 0);
-      const resultadoNetoProyectado = (totalIngresosCobrados + totalSaldosPendientes) - totalEgresos;
-
-      document.getElementById('caja-total-ingresos').innerText = `$${totalIngresosCobrados.toLocaleString()}`;
-      document.getElementById('caja-total-pendientes').innerText = `$${totalSaldosPendientes.toLocaleString()}`;
-      document.getElementById('caja-total-egresos').innerText = `$${totalEgresos.toLocaleString()}`;
-      document.getElementById('caja-resultado-neto').innerText = `$${resultadoNetoProyectado.toLocaleString()}`;
-
-      if (filtro === 'ingreso') movimientos = movimientos.filter(m => m.esIngreso);
-      if (filtro === 'egreso') movimientos = movimientos.filter(m => !m.esIngreso);
-
-      const tbody = document.getElementById('tabla-caja-body');
-      tbody.innerHTML = movimientos.map(m => `
-        <tr class="border-b hover:bg-gray-50 text-xs">
-          <td class="p-2.5 text-gray-500">${m.fecha}</td>
-          <td class="p-2.5"><span class="px-2 py-0.5 rounded font-semibold ${m.esIngreso ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${m.tipo}</span></td>
-          <td class="p-2.5 font-medium text-gray-800">${m.concepto}</td>
-          <td class="p-2.5"><span class="border px-1.5 py-0.5 rounded">${m.medio}</span></td>
-          <td class="p-2.5 font-bold ${m.esIngreso ? 'text-green-700' : 'text-red-600'}">${m.esIngreso ? '+' : '-'}$${m.monto.toLocaleString()}</td>
-        </tr>
-      `).join('');
-    }
-
-    // --- OPERACIONES DE EXCEL, ORDEN E HISTORIAL ---
     function procesarExcelCSV(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -1121,7 +1369,7 @@
         id: Date.now(), fechaRegistro: new Date().toLocaleDateString(),
         clienta, dni, telefono, domicilio, email, fechaEvento, observaciones,
         items: [...itemsOrdenActual], total,
-        pagos: inicial > 0 ? [{ fecha: new Date().toLocaleDateString(), monto: inicial, medio, facturado: false }] : []
+        pagos: inicial > 0 ? [{ fecha: new Date().toISOString().split('T')[0], monto: inicial, medio, facturado: false }] : []
       };
 
       dbOperaciones.push(nuevaOp);
@@ -1147,37 +1395,6 @@
       actualizarAgendaDetalle(fechaEvento);
       alert('¡Operación guardada correctamente!');
       switchTab('historial');
-    }
-
-    function guardarIngresoManual() {
-      const concepto = document.getElementById('ingreso-concepto').value.trim();
-      const monto = parseFloat(document.getElementById('ingreso-monto').value) || 0;
-      const medio = document.getElementById('ingreso-medio').value;
-
-      if (!concepto || monto <= 0) return alert('Ingresa concepto y monto del ingreso.');
-
-      dbIngresosManuales.push({ id: Date.now(), fecha: new Date().toLocaleDateString(), concepto, monto, medio });
-      guardarDB();
-      document.getElementById('ingreso-concepto').value = '';
-      document.getElementById('ingreso-monto').value = '';
-      renderCajaMovimientos();
-      alert('Ingreso registrado en caja.');
-    }
-
-    function guardarGasto() {
-      const concepto = document.getElementById('gasto-concepto').value.trim();
-      const monto = parseFloat(document.getElementById('gasto-monto').value) || 0;
-      const tipo = document.getElementById('gasto-tipo').value;
-      const medio = document.getElementById('gasto-medio').value;
-
-      if (!concepto || monto <= 0) return alert('Ingresa concepto y monto del gasto.');
-
-      dbGastos.push({ id: Date.now(), fecha: new Date().toLocaleDateString(), concepto, tipo, monto, medio, facturado: true });
-      guardarDB();
-      document.getElementById('gasto-concepto').value = '';
-      document.getElementById('gasto-monto').value = '';
-      renderCajaMovimientos();
-      alert('Gasto registrado.');
     }
 
     function renderHistorial() {
@@ -1208,9 +1425,7 @@
       document.getElementById('modal-pago').classList.remove('hidden');
     }
 
-    function cerrarModalPago() {
-      document.getElementById('modal-pago').classList.add('hidden');
-    }
+    function cerrarModalPago() { document.getElementById('modal-pago').classList.add('hidden'); }
 
     function guardarPagoCuota() {
       const opId = parseInt(document.getElementById('pago-op-id').value);
@@ -1221,7 +1436,7 @@
 
       const op = dbOperaciones.find(o => o.id === opId);
       if (op) {
-        op.pagos.push({ fecha: new Date().toLocaleDateString(), monto, medio, facturado: false });
+        op.pagos.push({ fecha: new Date().toISOString().split('T')[0], monto, medio, facturado: false });
         guardarDB();
         renderHistorial();
         renderCajaMovimientos();

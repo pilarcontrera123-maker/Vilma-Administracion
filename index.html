@@ -88,7 +88,7 @@
       <!-- SECCIÓN 1: REGISTRO Y EDICIÓN DE CONTRATO -->
       <section id="sec-registro" class="space-y-6">
         
-        <!-- BANNER DE MODO EDICIÓN (OCULTO POR DEFECTO) -->
+        <!-- BANNER DE MODO EDICIÓN -->
         <div id="banner-edicion-contrato" class="hidden bg-amber-100 border-l-4 border-amber-600 text-amber-950 p-4 rounded-xl shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3">
           <div class="flex items-center gap-2">
             <i data-lucide="edit-3" class="w-5 h-5 text-amber-700"></i>
@@ -164,7 +164,7 @@
               <i data-lucide="search" class="w-4 h-4"></i> Segunda: Identificación del Vestido
             </h3>
             <div class="flex flex-col sm:flex-row gap-2">
-              <input type="text" id="buscar-codigo" placeholder="Escribe código (ej: ALQ-15A-01, VEN-NOV-02) o modelo..." class="flex-1 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+              <input type="text" id="buscar-codigo" placeholder="Escribe código (ej: 1, 39, 236) o nombre del vestido..." class="flex-1 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
               <button onclick="agregarProductoAOrden()" class="bg-purple-700 hover:bg-purple-800 text-white px-5 py-2.5 rounded-lg font-medium text-sm transition flex items-center justify-center gap-1">
                 <i data-lucide="shopping-cart" class="w-4 h-4"></i> Añadir al Contrato
               </button>
@@ -316,7 +316,7 @@
 
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
           <div>
-            <h2 class="text-lg font-bold text-gray-800">Inventario de Stock, Colores y Talles</h2>
+            <h2 class="text-lg font-bold text-gray-800">Inventario de Stock (<span id="contador-total-stock">0</span> prendas)</h2>
             <p class="text-xs text-gray-500">Modifica prendas, edita medidas y actualiza el estado de limpieza</p>
           </div>
           <div class="flex flex-wrap gap-2">
@@ -331,20 +331,26 @@
         </div>
 
         <div class="bg-purple-50 p-4 rounded-xl border border-purple-200 flex flex-wrap gap-4 items-center text-xs font-semibold">
-          <span class="text-purple-900 flex items-center gap-1"><i data-lucide="filter" class="w-4 h-4"></i> FILTRAR STOCK POR:</span>
+          <span class="text-purple-900 flex items-center gap-1"><i data-lucide="filter" class="w-4 h-4"></i> FILTRAR:</span>
           
+          <div class="flex items-center gap-1">
+            <input type="text" id="filtro-stock-texto" oninput="renderTablaStock()" placeholder="Buscar código o nombre..." class="border p-1.5 rounded bg-white font-normal w-44">
+          </div>
+
           <div class="flex items-center gap-1">
             <label class="text-gray-600">Color:</label>
             <select id="filtro-stock-color" onchange="renderTablaStock()" class="border p-1.5 rounded bg-white font-normal">
               <option value="todos">Todos los Colores</option>
               <option value="Rojo">Rojo / Bordó</option>
-              <option value="Rosa">Rosa / Fucsia / Pastel</option>
+              <option value="Rosa">Rosa / Rosado / Fucsia</option>
               <option value="Verde">Verde</option>
               <option value="Azul">Azul / Celeste</option>
-              <option value="Negro">Negro / Oscuros</option>
-              <option value="Blanco">Blanco / Marfil / Nude</option>
+              <option value="Negro">Negro</option>
+              <option value="Blanco">Blanco / Beige / Cremita</option>
               <option value="Amarillo">Amarillo / Dorado</option>
-              <option value="Otro">Otro / Varios</option>
+              <option value="Marron">Marrón / Chocolate</option>
+              <option value="Morado">Morado / Violeta</option>
+              <option value="Gris">Gris / Plateado</option>
             </select>
           </div>
 
@@ -352,6 +358,7 @@
             <label class="text-gray-600">Talle:</label>
             <select id="filtro-stock-talle" onchange="renderTablaStock()" class="border p-1.5 rounded bg-white font-normal">
               <option value="todos">Todos los Talles</option>
+              <option value="XS">XS</option>
               <option value="S">S</option>
               <option value="M">M</option>
               <option value="L">L</option>
@@ -361,7 +368,7 @@
           </div>
 
           <div class="flex items-center gap-1">
-            <label class="text-gray-600">Estado Limpieza:</label>
+            <label class="text-gray-600">Estado:</label>
             <select id="filtro-stock-estado" onchange="renderTablaStock()" class="border p-1.5 rounded bg-white font-normal">
               <option value="todos">Todos los Estados</option>
               <option value="Disponible / Limpio">🟢 Limpios / Disponibles</option>
@@ -372,17 +379,17 @@
         </div>
 
         <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
-          <div class="overflow-x-auto">
+          <div class="overflow-x-auto max-h-[650px]">
             <table class="w-full text-sm text-left text-gray-600">
-              <thead class="bg-purple-900 text-white text-xs uppercase">
+              <thead class="bg-purple-900 text-white text-xs uppercase sticky top-0 z-10">
                 <tr>
                   <th class="p-3">Foto / Código</th>
                   <th class="p-3">Nombre / Modelo</th>
                   <th class="p-3">Color</th>
-                  <th class="p-3">Guía de Talles / Medidas (cm)</th>
+                  <th class="p-3">Talle / Medidas</th>
                   <th class="p-3">Modalidad</th>
                   <th class="p-3">P. Venta / Alq.</th>
-                  <th class="p-3">Estado de Limpieza (Cambio Rápido)</th>
+                  <th class="p-3">Estado Limpieza</th>
                   <th class="p-3 text-center">Acciones</th>
                 </tr>
               </thead>
@@ -653,27 +660,12 @@
 
           <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">Color Principal *</label>
-            <select id="prod-color" class="w-full border p-2 rounded-lg">
-              <option value="Rojo">Rojo / Bordó</option>
-              <option value="Rosa">Rosa / Fucsia / Pastel</option>
-              <option value="Verde">Verde</option>
-              <option value="Azul">Azul / Celeste</option>
-              <option value="Negro">Negro / Oscuros</option>
-              <option value="Blanco">Blanco / Marfil / Nude</option>
-              <option value="Amarillo">Amarillo / Dorado</option>
-              <option value="Otro">Otro / Varios</option>
-            </select>
+            <input type="text" id="prod-color" placeholder="Ej: Verde, Rojo, Negro" class="w-full border p-2 rounded-lg">
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Categoría</label>
-            <select id="prod-categoria" class="w-full border p-2 rounded-lg">
-              <option value="15 Años">15 Años</option>
-              <option value="Novia">Novia</option>
-              <option value="Fiesta Largo">Fiesta Largo</option>
-              <option value="Fiesta Corto">Fiesta Corto</option>
-              <option value="Accesorio">Accesorio (Velo/Cartera)</option>
-            </select>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Categoría / Clasificación</label>
+            <input type="text" id="prod-categoria" placeholder="Ej: Fiesta Largo, Novia, Clásico" class="w-full border p-2 rounded-lg">
           </div>
 
           <div class="col-span-2">
@@ -687,7 +679,7 @@
             <div><label class="block text-[10px] uppercase">Busto (cm)</label><input type="number" id="prod-busto" placeholder="90" class="w-full border p-1.5 rounded text-xs"></div>
             <div><label class="block text-[10px] uppercase">Cintura (cm)</label><input type="number" id="prod-cintura" placeholder="70" class="w-full border p-1.5 rounded text-xs"></div>
             <div><label class="block text-[10px] uppercase">Cadera (cm)</label><input type="number" id="prod-cadera" placeholder="95" class="w-full border p-1.5 rounded text-xs"></div>
-            <div class="col-span-4"><label class="block text-[10px] uppercase">Largo de prenda / Talle Específico</label><input type="text" id="prod-largo" placeholder="Largo 145 cm" class="w-full border p-1.5 rounded text-xs"></div>
+            <div class="col-span-4"><label class="block text-[10px] uppercase">Detalle Color / Observación de Prenda</label><input type="text" id="prod-largo" placeholder="Ej: Verde Esmeralda / Baja" class="w-full border p-1.5 rounded text-xs"></div>
           </div>
 
           <div>
@@ -806,10 +798,7 @@
         dbGastos = data.gastos || [];
         dbIngresosManuales = data.ingresosManuales || [];
       } else {
-        dbProductos = [
-          { id: 1, codigo: 'ALQ-15A-01', nombre: 'Vestido Gala Sateen', color: 'Rojo', foto: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=150&auto=format&fit=crop', talle: 'M', busto: 90, cintura: 70, cadera: 98, largo: '145 cm', categoria: '15 Años', modalidad: 'Alquiler', precioVenta: 120000, precioAlquiler: 35000, estadoLimpieza: 'Disponible / Limpio' },
-          { id: 2, codigo: 'VEN-NOV-01', nombre: 'Novia Corte Sirena Encaje', color: 'Blanco', foto: 'https://images.unsplash.com/photo-1594552072238-b8a33785b261?w=150&auto=format&fit=crop', talle: 'S', busto: 85, cintura: 65, cadera: 92, largo: '150 cm', categoria: 'Novia', modalidad: 'Venta', precioVenta: 280000, precioAlquiler: 90000, estadoLimpieza: 'En Tintorería' }
-        ];
+        dbProductos = [];
         guardarDB();
       }
 
@@ -829,15 +818,19 @@
 
     async function guardarDB() {
       try {
-        await setDoc(docRef, {
+        // Limpiar cualquier propiedad undefined para que Firestore nunca rechace el guardado
+        const payload = JSON.parse(JSON.stringify({
           productos: dbProductos,
           operaciones: dbOperaciones,
           gastos: dbGastos,
           ingresosManuales: dbIngresosManuales
-        });
+        }));
+        await setDoc(docRef, payload);
+        return true;
       } catch (e) {
-        alert("Error al guardar en la nube. Verifica las reglas de Firestore (Modo de prueba).");
+        alert("Error al guardar en la nube (" + e.message + "). Revisa las reglas de Firestore en Firebase Console.");
         console.error(e);
+        return false;
       }
     }
 
@@ -845,7 +838,7 @@
       const u = document.getElementById('login-usuario').value.trim().toLowerCase();
       const c = document.getElementById('login-clave').value.trim();
 
-      if ((u === 'admin' && c === '4578') || (u === 'vilma' && c === '4578')) {
+      if ((u === 'admin' && c === '1234') || (u === 'vilma' && c === '1234')) {
         document.getElementById('pantalla-login').classList.add('hidden');
         document.getElementById('app-contenido').classList.remove('hidden');
         lucide.createIcons();
@@ -974,7 +967,6 @@
         return;
       }
 
-      // Liberar los vestidos alquilados en el stock
       (op.items || []).forEach(item => {
         if (item.modalidad === 'Alquiler') {
           const prod = dbProductos.find(p => p.id === item.id);
@@ -1601,14 +1593,23 @@
     };
 
     window.renderTablaStock = function() {
+      const filtroTexto = (document.getElementById('filtro-stock-texto')?.value || '').trim().toLowerCase();
       const filtroColor = document.getElementById('filtro-stock-color').value;
       const filtroTalle = document.getElementById('filtro-stock-talle').value;
       const filtroEstado = document.getElementById('filtro-stock-estado').value;
 
+      document.getElementById('contador-total-stock').innerText = dbProductos.length;
+
       let productosFiltrados = dbProductos;
 
+      if (filtroTexto) {
+        productosFiltrados = productosFiltrados.filter(p =>
+          (p.codigo || '').toLowerCase().includes(filtroTexto) ||
+          (p.nombre || '').toLowerCase().includes(filtroTexto)
+        );
+      }
       if (filtroColor !== 'todos') productosFiltrados = productosFiltrados.filter(p => (p.color || '').toLowerCase().includes(filtroColor.toLowerCase()));
-      if (filtroTalle !== 'todos') productosFiltrados = productosFiltrados.filter(p => (p.talle || '').toUpperCase() === filtroTalle.toUpperCase());
+      if (filtroTalle !== 'todos') productosFiltrados = productosFiltrados.filter(p => (p.talle || '').trim().toUpperCase() === filtroTalle.toUpperCase());
       if (filtroEstado !== 'todos') productosFiltrados = productosFiltrados.filter(p => p.estadoLimpieza === filtroEstado);
 
       const pendientesLavar = dbProductos.filter(p => p.estadoLimpieza === 'En Tintorería');
@@ -1636,19 +1637,19 @@
         <tr class="hover:bg-gray-50 border-b text-xs">
           <td class="p-3">
             <div class="flex items-center gap-2">
-              ${p.foto ? `<img src="${p.foto}" class="w-10 h-10 rounded-lg object-cover border">` : '<div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-400">Sin foto</div>'}
+              ${p.foto ? `<img src="${p.foto}" class="w-10 h-10 rounded-lg object-cover border">` : '<div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-xs font-bold text-purple-800">#' + p.codigo + '</div>'}
               <span class="font-bold text-purple-900">${p.codigo}</span>
             </div>
           </td>
-          <td class="p-3 font-medium">${p.nombre}<br><span class="text-[10px] text-gray-400">${p.categoria}</span></td>
+          <td class="p-3 font-medium">${p.nombre}<br><span class="text-[10px] text-gray-400">${p.categoria || ''}</span></td>
           <td class="p-3"><span class="px-2 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-900">${p.color || '-'}</span></td>
           <td class="p-3 bg-purple-50/50 rounded-lg">
             <div><strong class="text-purple-900">Talle:</strong> ${p.talle || 'Sin Talle'}</div>
-            <div class="text-gray-600 text-[10px]">Bust: ${p.busto || '-'} cm | Cint: ${p.cintura || '-'} cm | Cad: ${p.cadera || '-'} cm</div>
+            ${(p.busto || p.cintura || p.cadera) ? `<div class="text-gray-600 text-[10px]">Bust: ${p.busto || '-'} | Cint: ${p.cintura || '-'} | Cad: ${p.cadera || '-'}</div>` : ''}
             <div class="text-gray-500 italic text-[10px]">${p.largo || ''}</div>
           </td>
           <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-semibold ${p.modalidad === 'Venta' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">${p.modalidad}</span></td>
-          <td class="p-3 font-semibold text-gray-800">$${(p.modalidad === 'Venta' ? p.precioVenta : p.precioAlquiler).toLocaleString()}</td>
+          <td class="p-3 font-semibold text-gray-800">$${(p.modalidad === 'Venta' ? (p.precioVenta || 0) : (p.precioAlquiler || 0)).toLocaleString()}</td>
           <td class="p-3">
             <select onchange="cambiarEstadoRápido(${p.id}, this.value)" class="border p-1 rounded font-medium text-xs ${p.estadoLimpieza.includes('Disponible') ? 'bg-green-50 text-green-800 border-green-300' : p.estadoLimpieza.includes('Tintorería') ? 'bg-yellow-50 text-yellow-800 border-yellow-300' : 'bg-blue-50 text-blue-800 border-blue-300'}">
               <option value="Disponible / Limpio" ${p.estadoLimpieza === 'Disponible / Limpio' ? 'selected' : ''}>🟢 Disponible / Limpio</option>
@@ -1670,6 +1671,8 @@
       document.getElementById('modal-producto-titulo').innerText = 'Cargar Nuevo Vestido';
       document.getElementById('prod-codigo').value = '';
       document.getElementById('prod-nombre').value = '';
+      document.getElementById('prod-color').value = '';
+      document.getElementById('prod-categoria').value = '';
       document.getElementById('prod-foto').value = '';
       document.getElementById('prod-talle').value = '';
       document.getElementById('prod-busto').value = '';
@@ -1689,8 +1692,8 @@
       document.getElementById('modal-producto-titulo').innerText = `Editar Vestido: ${p.codigo}`;
       document.getElementById('prod-codigo').value = p.codigo || '';
       document.getElementById('prod-nombre').value = p.nombre || '';
-      document.getElementById('prod-color').value = p.color || 'Rojo';
-      document.getElementById('prod-categoria').value = p.categoria || '15 Años';
+      document.getElementById('prod-color').value = p.color || '';
+      document.getElementById('prod-categoria').value = p.categoria || '';
       document.getElementById('prod-foto').value = p.foto || '';
       document.getElementById('prod-talle').value = p.talle || '';
       document.getElementById('prod-busto').value = p.busto || '';
@@ -1716,13 +1719,13 @@
 
       const datosPrenda = {
         codigo, nombre,
-        color: document.getElementById('prod-color').value,
-        categoria: document.getElementById('prod-categoria').value,
+        color: document.getElementById('prod-color').value.trim(),
+        categoria: document.getElementById('prod-categoria').value.trim(),
         foto: document.getElementById('prod-foto').value.trim(),
         talle: document.getElementById('prod-talle').value.trim(),
-        busto: parseFloat(document.getElementById('prod-busto').value) || null,
-        cintura: parseFloat(document.getElementById('prod-cintura').value) || null,
-        cadera: parseFloat(document.getElementById('prod-cadera').value) || null,
+        busto: parseFloat(document.getElementById('prod-busto').value) || 0,
+        cintura: parseFloat(document.getElementById('prod-cintura').value) || 0,
+        cadera: parseFloat(document.getElementById('prod-cadera').value) || 0,
         largo: document.getElementById('prod-largo').value.trim(),
         modalidad: document.getElementById('prod-modalidad').value,
         precioVenta: parseFloat(document.getElementById('prod-precio-venta').value) || 0,
@@ -1826,32 +1829,133 @@
       }).join('');
     };
 
+    // PARSER CSV COMPLETO (SOPORTA COMILLAS, COMAS EN PRECIOS Y EL FORMATO DE TU PLANILLA)
+    function parseCSVLine(line, sep) {
+      const res = [];
+      let cur = '';
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQuotes && line[i + 1] === '"') { cur += '"'; i++; }
+          else { inQuotes = !inQuotes; }
+        } else if (ch === sep && !inQuotes) {
+          res.push(cur.trim());
+          cur = '';
+        } else {
+          cur += ch;
+        }
+      }
+      res.push(cur.trim());
+      return res;
+    }
+
+    function limpiarNumeroMoneda(str) {
+      if (!str) return 0;
+      const limpio = str.replace(/[^0-9.-]+/g, '');
+      return parseFloat(limpio) || 0;
+    }
+
     window.procesarExcelCSV = function(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = async function(evt) {
-        const lineas = evt.target.result.split('\n');
+        const texto = evt.target.result.replace(/^\uFEFF/, '');
+        const lineas = texto.split(/\r?\n/);
+        if (lineas.length < 2) return;
+
+        const sep = lineas[0].includes(';') ? ';' : ',';
+        const headers = parseCSVLine(lineas[0], sep).map(h => h.toLowerCase());
+        const esFormatoPlanillaVilma = headers.includes('color gral') || headers.includes('condicion');
+
         let agregados = 0;
+        let actualizados = 0;
+
         for (let i = 1; i < lineas.length; i++) {
-          const separador = lineas[i].includes(';') ? ';' : ',';
-          const col = lineas[i].split(separador);
-          if (col.length >= 2 && col[0].trim() !== '') {
-            dbProductos.push({
-              id: Date.now() + i, codigo: col[0].trim().toUpperCase(), nombre: col[1].trim(),
-              color: col[2] ? col[2].trim() : 'Otro', categoria: col[3] ? col[3].trim() : 'Fiesta Largo',
-              modalidad: col[4] ? col[4].trim() : 'Alquiler', precioVenta: parseFloat(col[5]) || 0,
-              precioAlquiler: parseFloat(col[6]) || 0, talle: col[7] ? col[7].trim() : 'M',
-              busto: parseFloat(col[8]) || null, cintura: parseFloat(col[9]) || null, cadera: parseFloat(col[10]) || null,
-              largo: col[11] ? col[11].trim() : '', estadoLimpieza: 'Disponible / Limpio'
-            });
+          if (!lineas[i].trim()) continue;
+          const col = parseCSVLine(lineas[i], sep);
+          const codigo = (col[0] || '').trim().toUpperCase();
+          const nombre = (col[1] || '').trim();
+
+          // Ignorar filas numeradas sin nombre de vestido (como 363-375)
+          if (!codigo || !nombre) continue;
+
+          let prendaNueva;
+
+          if (esFormatoPlanillaVilma) {
+            // Orden de tu archivo "Stock - Hoja 1.csv":
+            // 0:Codigo, 1:Nombre, 2:Talle, 3:Color gral, 4:Espec, 5:Clasificacion, 6:Sub Clasif, 7:Condicion, 8:Observacion, 9:Costo, 10:Precio de venta, 11:Alquiler, 12:Foto
+            const talle = (col[2] || '').trim();
+            const color = (col[3] || 'Otro').trim();
+            const espec = (col[4] || '').trim();
+            const clasif = (col[5] || '').trim();
+            const subClasif = (col[6] || '').trim();
+            const condicion = (col[7] || 'Alquiler').trim();
+            const obs = (col[8] || '').trim();
+            const precioVenta = limpiarNumeroMoneda(col[10]);
+            const precioAlquiler = limpiarNumeroMoneda(col[11]);
+            const foto = (col[12] || '').startsWith('http') ? col[12].trim() : '';
+
+            const categoriaStr = [subClasif, clasif].filter(Boolean).join(' - ') || 'Fiesta';
+            const detalleStr = [espec, obs].filter(Boolean).join(' | ');
+
+            prendaNueva = {
+              id: Date.now() + i,
+              codigo,
+              nombre,
+              color,
+              categoria: categoriaStr,
+              modalidad: condicion.toLowerCase() === 'venta' ? 'Venta' : 'Alquiler',
+              precioVenta,
+              precioAlquiler,
+              talle,
+              busto: 0,
+              cintura: 0,
+              cadera: 0,
+              largo: detalleStr,
+              foto,
+              estadoLimpieza: 'Disponible / Limpio'
+            };
+          } else {
+            prendaNueva = {
+              id: Date.now() + i,
+              codigo,
+              nombre,
+              color: (col[2] || 'Otro').trim(),
+              categoria: (col[3] || 'Fiesta Largo').trim(),
+              modalidad: (col[4] || 'Alquiler').trim(),
+              precioVenta: limpiarNumeroMoneda(col[5]),
+              precioAlquiler: limpiarNumeroMoneda(col[6]),
+              talle: (col[7] || 'M').trim(),
+              busto: parseFloat(col[8]) || 0,
+              cintura: parseFloat(col[9]) || 0,
+              cadera: parseFloat(col[10]) || 0,
+              largo: (col[11] || '').trim(),
+              foto: '',
+              estadoLimpieza: 'Disponible / Limpio'
+            };
+          }
+
+          const existenteIdx = dbProductos.findIndex(p => p.codigo === codigo);
+          if (existenteIdx !== -1) {
+            prendaNueva.id = dbProductos[existenteIdx].id;
+            prendaNueva.estadoLimpieza = dbProductos[existenteIdx].estadoLimpieza || 'Disponible / Limpio';
+            dbProductos[existenteIdx] = prendaNueva;
+            actualizados++;
+          } else {
+            dbProductos.push(prendaNueva);
             agregados++;
           }
         }
-        await guardarDB();
-        alert(`¡Listo! Se importaron ${agregados} prendas a la nube.`);
+
+        const ok = await guardarDB();
+        e.target.value = '';
+        if (ok) {
+          alert(`¡Sincronizado en la nube! Se importaron ${agregados} vestidos nuevos y se actualizaron ${actualizados}.`);
+        }
       };
-      reader.readAsText(file);
+      reader.readAsText(file, 'UTF-8');
     };
 
     window.agregarProductoAOrden = function() {
@@ -1899,7 +2003,7 @@
           </td>
           <td class="p-2 font-medium">${item.nombre}</td>
           <td class="p-2"><span class="px-2 py-0.5 rounded text-xs bg-purple-100 text-purple-800 font-semibold">${item.color || '-'}</span></td>
-          <td class="p-2 text-xs text-gray-500">Talle ${item.talle || '-'} (B:${item.busto || '-'}, C:${item.cintura || '-'}, Cd:${item.cadera || '-'})</td>
+          <td class="p-2 text-xs text-gray-500">Talle ${item.talle || '-'}</td>
           <td class="p-2"><span class="px-2 py-0.5 rounded text-xs font-bold ${item.modalidad === 'Venta' ? 'bg-red-100 text-red-800' : 'bg-purple-100 text-purple-800'}">${item.modalidad.toUpperCase()}</span></td>
           <td class="p-2">
             <input type="number" value="${item.precio}" oninput="actualizarPrecioItemOrden(${idx}, this.value)" class="w-24 border border-gray-300 rounded p-1 text-xs font-bold text-gray-800">
@@ -1976,13 +2080,11 @@
       let idParaPDF = null;
 
       if (editContratoIdStr) {
-        // ACTUALIZAR CONTRATO EXISTENTE
         const editId = parseInt(editContratoIdStr);
         const idx = dbOperaciones.findIndex(o => o.id === editId);
         if (idx !== -1) {
           const opAnterior = dbOperaciones[idx];
 
-          // Liberar vestidos anteriores que ya no estén en la lista editada
           (opAnterior.items || []).forEach(oldItem => {
             if (oldItem.modalidad === 'Alquiler' && !itemsOrdenActual.some(ni => ni.id === oldItem.id)) {
               const p = dbProductos.find(prod => prod.id === oldItem.id);
@@ -1990,7 +2092,6 @@
             }
           });
 
-          // Marcar los nuevos vestidos seleccionados
           itemsOrdenActual.forEach(item => {
             if (item.modalidad === 'Venta') {
               dbProductos = dbProductos.filter(p => p.id !== item.id);
@@ -2000,7 +2101,6 @@
             }
           });
 
-          // Actualizar pagos si se modificó el monto inicial
           let pagosActualizados = opAnterior.pagos ? [...opAnterior.pagos] : [];
           const abonadoPrevio = pagosActualizados.reduce((s, p) => s + p.monto, 0);
           if (inicial !== abonadoPrevio) {
@@ -2029,7 +2129,6 @@
           idParaPDF = editId;
         }
       } else {
-        // CREAR NUEVO CONTRATO
         itemsOrdenActual.forEach(item => {
           if (item.modalidad === 'Venta') {
             dbProductos = dbProductos.filter(p => p.id !== item.id);
@@ -2055,12 +2154,8 @@
       }
 
       await guardarDB();
-
-      // Dejar formulario completamente en blanco para el próximo contrato
       limpiarFormularioRegistro();
       switchTab('historial');
-      
-      // Abrir el Contrato PDF oficial
       if (idParaPDF) generarComprobantePDF(idParaPDF);
     };
 

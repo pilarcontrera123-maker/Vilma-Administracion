@@ -85,12 +85,34 @@
 
     <main class="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
 
-      <!-- SECCIÓN 1: REGISTRO DE ALQUILER / VENTA Y CONTRATO -->
+      <!-- SECCIÓN 1: REGISTRO Y EDICIÓN DE CONTRATO -->
       <section id="sec-registro" class="space-y-6">
+        
+        <!-- BANNER DE MODO EDICIÓN (OCULTO POR DEFECTO) -->
+        <div id="banner-edicion-contrato" class="hidden bg-amber-100 border-l-4 border-amber-600 text-amber-950 p-4 rounded-xl shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3">
+          <div class="flex items-center gap-2">
+            <i data-lucide="edit-3" class="w-5 h-5 text-amber-700"></i>
+            <div>
+              <span class="font-bold text-sm block" id="texto-edicion-contrato">Editando Contrato N.º 00000</span>
+              <span class="text-xs text-amber-800">Modifica los datos, prendas o importes que necesites y haz clic en "Actualizar Contrato".</span>
+            </div>
+          </div>
+          <button onclick="limpiarFormularioRegistro()" class="bg-white border border-amber-400 hover:bg-amber-50 text-amber-900 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+            Cancelar Edición / Nuevo Contrato
+          </button>
+        </div>
+
         <div class="bg-white rounded-xl shadow-md p-6 border border-gray-200">
-          <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <i data-lucide="user-check" class="text-purple-600"></i> Primera: Datos de la Clienta y Fechas del Contrato
-          </h2>
+          <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+            <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+              <i data-lucide="user-check" class="text-purple-600"></i> Primera: Datos de la Clienta y Fechas del Contrato
+            </h2>
+            <button onclick="limpiarFormularioRegistro()" class="text-xs text-gray-500 hover:text-purple-800 border border-gray-300 px-3 py-1.5 rounded-lg flex items-center gap-1 transition" title="Vaciar todos los campos">
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Limpiar Formulario
+            </button>
+          </div>
+
+          <input type="hidden" id="edit-contrato-id" value="">
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-purple-50/50 p-4 rounded-xl border border-purple-100">
             <div>
@@ -107,7 +129,7 @@
             </div>
 
             <div class="md:col-span-2">
-              <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Domicilio *</label>
+              <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Domicilio</label>
               <input type="text" id="reg-domicilio" placeholder="Ej: Av. San Martín 450" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
             </div>
             <div>
@@ -158,7 +180,7 @@
                   <th class="p-3">Color</th>
                   <th class="p-3">Talle y Medidas</th>
                   <th class="p-3">Modalidad</th>
-                  <th class="p-3">Importe</th>
+                  <th class="p-3">Importe ($)</th>
                   <th class="p-3 text-center">Quitar</th>
                 </tr>
               </thead>
@@ -176,19 +198,19 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Valor Reposición Ref. ($)</label>
-              <input type="number" id="reg-valor-reposicion" placeholder="Ej: 150000" value="0" class="w-full border border-gray-300 bg-white rounded-lg p-2 text-xs font-semibold">
+              <input type="number" id="reg-valor-reposicion" placeholder="0" value="" class="w-full border border-gray-300 bg-white rounded-lg p-2 text-xs font-semibold">
             </div>
             <div>
               <label class="block text-xs font-bold text-purple-900 uppercase mb-1">Depósito Garantía ($)</label>
-              <input type="number" id="reg-garantia" placeholder="Ej: 15000" value="0" oninput="calcularTotales()" class="w-full border border-purple-300 bg-white rounded-lg p-2 text-xs font-bold text-purple-900">
+              <input type="number" id="reg-garantia" placeholder="0" value="" oninput="calcularTotales()" class="w-full border border-purple-300 bg-white rounded-lg p-2 text-xs font-bold text-purple-900">
             </div>
             <div>
               <label class="block text-xs font-bold text-gray-700 uppercase mb-1">% Multa Diaria Mora</label>
-              <input type="number" id="reg-multa-porcentaje" placeholder="Ej: 10" value="10" min="0" max="100" oninput="calcularTotales()" class="w-full border border-gray-300 bg-white rounded-lg p-2 text-xs font-semibold">
+              <input type="number" id="reg-multa-porcentaje" placeholder="10" value="10" min="0" max="100" oninput="calcularTotales()" class="w-full border border-gray-300 bg-white rounded-lg p-2 text-xs font-semibold">
             </div>
             <div class="md:col-span-4">
-              <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Observaciones al Entregar / Ajustes de Modistería</label>
-              <textarea id="reg-observaciones" rows="2" placeholder="Ej: Vestido en perfecto estado, sin manchas ni roturas. Se ajusta bretel 2cm..." class="w-full border border-gray-300 bg-white rounded-lg p-2 text-xs"></textarea>
+              <label class="block text-xs font-bold text-gray-700 uppercase mb-1">🔒 Notas Internas Privadas (NO salen en el contrato de la clienta)</label>
+              <textarea id="reg-observaciones" rows="2" placeholder="Ej: Mandar a lavar antes del jueves, llevar a la modista para ajustar bretel..." class="w-full border border-gray-300 bg-white rounded-lg p-2 text-xs"></textarea>
             </div>
           </div>
 
@@ -211,18 +233,18 @@
                 </div>
                 <div>
                   <label class="block text-xs text-gray-600 mb-1">Valor</label>
-                  <input type="number" id="valor-ajuste" value="0" min="0" oninput="calcularTotales()" class="w-full border border-gray-300 rounded-lg p-2 text-sm">
+                  <input type="number" id="valor-ajuste" placeholder="0" value="" min="0" oninput="calcularTotales()" class="w-full border border-gray-300 rounded-lg p-2 text-sm">
                 </div>
               </div>
 
               <div class="pt-3 border-t border-gray-200">
                 <h4 class="font-bold text-gray-800 text-sm mb-2 flex items-center gap-1">
-                  <i data-lucide="wallet" class="w-4 h-4 text-green-600"></i> Seña Abonada al Reservar
+                  <i data-lucide="wallet" class="w-4 h-4 text-green-600"></i> <span id="label-titulo-sena">Seña Abonada al Reservar</span>
                 </h4>
                 <div class="grid grid-cols-2 gap-3">
                   <div>
-                    <label class="block text-xs text-gray-600 mb-1">Seña Abonada ($)</label>
-                    <input type="number" id="monto-pago-inicial" value="0" min="0" oninput="calcularTotales()" class="w-full border border-gray-300 rounded-lg p-2 text-sm font-bold text-green-700">
+                    <label class="block text-xs text-gray-600 mb-1">Monto Abonado ($)</label>
+                    <input type="number" id="monto-pago-inicial" placeholder="0" value="" min="0" oninput="calcularTotales()" class="w-full border border-gray-300 rounded-lg p-2 text-sm font-bold text-green-700">
                   </div>
                   <div>
                     <label class="block text-xs text-gray-600 mb-1">Medio de Pago</label>
@@ -233,6 +255,9 @@
                     </select>
                   </div>
                 </div>
+                <p id="nota-edicion-pagos" class="hidden text-[11px] text-amber-800 mt-1.5">
+                  * Si la clienta realizó múltiples pagos, puedes ajustarlos detalladamente desde la pestaña <strong>Cobros & Caja</strong>.
+                </p>
               </div>
             </div>
 
@@ -241,7 +266,7 @@
                 <div class="flex justify-between text-gray-600"><span>Subtotal:</span><span id="resumen-subtotal">$0</span></div>
                 <div class="flex justify-between text-gray-600"><span>Ajuste:</span><span id="resumen-ajuste">$0</span></div>
                 <div class="flex justify-between font-bold text-gray-800 pt-1.5 border-t border-gray-100"><span>Precio Total del Alquiler:</span><span id="resumen-total">$0</span></div>
-                <div class="flex justify-between text-green-600 font-medium"><span>Seña Abonada:</span><span id="resumen-abonado">$0</span></div>
+                <div class="flex justify-between text-green-600 font-medium"><span>Seña / Total Abonado:</span><span id="resumen-abonado">$0</span></div>
                 <div class="flex justify-between text-red-600 font-semibold"><span>Saldo Pendiente Alquiler:</span><span id="resumen-saldo">$0</span></div>
                 <div class="flex justify-between text-purple-800 font-medium"><span>Depósito Garantía Reintegrable:</span><span id="resumen-garantia">$0</span></div>
                 <div class="flex justify-between text-purple-950 font-black text-base pt-2 border-t border-gray-200">
@@ -250,7 +275,7 @@
                 </div>
               </div>
 
-              <button onclick="guardarOperacion()" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition shadow flex items-center justify-center gap-2">
+              <button id="btn-guardar-operacion" onclick="guardarOperacion()" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition shadow flex items-center justify-center gap-2">
                 <i data-lucide="file-check" class="w-5 h-5"></i> Guardar y Generar Contrato PDF
               </button>
             </div>
@@ -375,7 +400,7 @@
               <h2 class="text-lg font-bold text-purple-950 flex items-center gap-2">
                 <i data-lucide="calendar" class="text-purple-600"></i> Calendario Mensual de Eventos
               </h2>
-              <p class="text-xs text-gray-500">Visualiza los alquileres y entregas agendadas día por día</p>
+              <p class="text-xs text-gray-500">Visualiza los alquileres, entregas agendadas y notas internas día por día</p>
             </div>
             <div class="flex items-center gap-3">
               <button onclick="cambiarMesAgenda(-1)" class="p-2 border rounded-lg hover:bg-gray-100"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
@@ -541,7 +566,7 @@
               <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
                 <i data-lucide="file-text" class="text-purple-600"></i> Contratos de Alquiler e Historial
               </h2>
-              <p class="text-xs text-gray-500">Genera el Contrato Oficial en PDF listo para firmar o envíalo por WhatsApp / Mail</p>
+              <p class="text-xs text-gray-500">Genera el Contrato Oficial en PDF, envíalo por WhatsApp / Mail, cobra saldos, edita o elimina contratos</p>
             </div>
           </div>
           <div class="overflow-x-auto">
@@ -549,12 +574,12 @@
               <thead class="bg-gray-800 text-white text-xs uppercase">
                 <tr>
                   <th class="p-3">Contrato N.º</th>
-                  <th class="p-3">Clienta & DNI</th>
+                  <th class="p-3">Clienta & Notas Internas</th>
                   <th class="p-3">Fechas (Retiro / Evento / Dev.)</th>
                   <th class="p-3">Vestido</th>
                   <th class="p-3">Importes & Garantía</th>
                   <th class="p-3 text-center">Contrato & Envío</th>
-                  <th class="p-3 text-center">Cobro</th>
+                  <th class="p-3 text-center">Acciones</th>
                 </tr>
               </thead>
               <tbody id="tabla-historial-body" class="divide-y divide-gray-200"></tbody>
@@ -730,7 +755,7 @@
     import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // =========================================================================
-    // 1. PEGA AQUÍ LAS CREDENCIALES DE TU PROYECTO DE FIREBASE
+    // 1. CREDENCIALES DE FIREBASE (VILMA WEDDINGS)
     // =========================================================================
     const firebaseConfig = {
       apiKey: "AIzaSyAouxOYxIsLwDafTGX60DWxU7ZB60z2Hss",
@@ -741,7 +766,6 @@
       appId: "1:906552080999:web:fea03d3d366aad41ccf2c2",
       measurementId: "G-GT4TB6SLRB"
     };
-      
 
     // =========================================================================
     // 2. DATOS DEL LOCAL PARA EL CONTRATO PDF / WHATSAPP / MAIL
@@ -799,7 +823,7 @@
       const badge = document.getElementById('estado-nube');
       if (badge) {
         badge.className = "text-[10px] bg-red-500/20 text-red-200 border border-red-400/30 px-2 py-0.5 rounded-full flex items-center gap-1";
-        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Revisar Config Firebase`;
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Revisar Reglas Firebase`;
       }
     });
 
@@ -812,16 +836,16 @@
           ingresosManuales: dbIngresosManuales
         });
       } catch (e) {
-        alert("Error al guardar en la nube. Verifica que hayas pegado bien tu firebaseConfig.");
+        alert("Error al guardar en la nube. Verifica las reglas de Firestore (Modo de prueba).");
         console.error(e);
       }
     }
 
     window.validarLogin = function() {
-      const u = document.getElementById('login-usuario').value.trim();
+      const u = document.getElementById('login-usuario').value.trim().toLowerCase();
       const c = document.getElementById('login-clave').value.trim();
 
-      if ((u === 'admin' && c === '1234') || (u === 'vilma' && c === '1234')) {
+      if ((u === 'admin' && c === '4578') || (u === 'vilma' && c === '4578')) {
         document.getElementById('pantalla-login').classList.add('hidden');
         document.getElementById('app-contenido').classList.remove('hidden');
         lucide.createIcons();
@@ -848,6 +872,118 @@
       if (tab === 'cobros') renderCajaMovimientos();
       if (tab === 'historial') renderHistorial();
       lucide.createIcons();
+    };
+
+    // --- LIMPIAR FORMULARIO DE CONTRATO ---
+    window.limpiarFormularioRegistro = function() {
+      document.getElementById('edit-contrato-id').value = '';
+      document.getElementById('banner-edicion-contrato').classList.add('hidden');
+      document.getElementById('nota-edicion-pagos').classList.add('hidden');
+      document.getElementById('label-titulo-sena').innerText = 'Seña Abonada al Reservar';
+      
+      const btnGuardar = document.getElementById('btn-guardar-operacion');
+      btnGuardar.className = "mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition shadow flex items-center justify-center gap-2";
+      btnGuardar.innerHTML = `<i data-lucide="file-check" class="w-5 h-5"></i> Guardar y Generar Contrato PDF`;
+
+      document.getElementById('reg-clienta').value = '';
+      document.getElementById('reg-dni').value = '';
+      document.getElementById('reg-telefono').value = '';
+      document.getElementById('reg-domicilio').value = '';
+      document.getElementById('reg-email').value = '';
+      document.getElementById('reg-fecha-retiro').value = '';
+      document.getElementById('reg-hora-retiro').value = '18:00';
+      document.getElementById('reg-fecha-evento').value = '';
+      document.getElementById('reg-fecha-devolucion').value = '';
+      document.getElementById('reg-hora-devolucion').value = '20:00';
+      document.getElementById('buscar-codigo').value = '';
+      document.getElementById('reg-accesorios').value = 'Funda y percha original';
+      document.getElementById('reg-valor-reposicion').value = '';
+      document.getElementById('reg-garantia').value = '';
+      document.getElementById('reg-multa-porcentaje').value = '10';
+      document.getElementById('reg-observaciones').value = '';
+      document.getElementById('tipo-ajuste').value = 'ninguno';
+      document.getElementById('valor-ajuste').value = '';
+      document.getElementById('monto-pago-inicial').value = '';
+      document.getElementById('medio-pago-inicial').value = 'Efectivo';
+
+      itemsOrdenActual = [];
+      renderTablaOrden();
+      calcularTotales();
+      lucide.createIcons();
+    };
+
+    // --- EDITAR Y ELIMINAR CONTRATOS ---
+    window.editarContrato = function(opId) {
+      const op = dbOperaciones.find(o => o.id === opId);
+      if (!op) return;
+
+      const numeroContrato = op.id.toString().slice(-5);
+      document.getElementById('edit-contrato-id').value = op.id;
+      document.getElementById('texto-edicion-contrato').innerText = `Editando Contrato N.º ${numeroContrato} — ${op.clienta}`;
+      document.getElementById('banner-edicion-contrato').classList.remove('hidden');
+
+      const btnGuardar = document.getElementById('btn-guardar-operacion');
+      btnGuardar.className = "mt-4 w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-lg transition shadow flex items-center justify-center gap-2";
+      btnGuardar.innerHTML = `<i data-lucide="save" class="w-5 h-5"></i> Actualizar Contrato y Ver PDF`;
+
+      document.getElementById('reg-clienta').value = op.clienta || '';
+      document.getElementById('reg-dni').value = op.dni || '';
+      document.getElementById('reg-telefono').value = op.telefono || '';
+      document.getElementById('reg-domicilio').value = op.domicilio || '';
+      document.getElementById('reg-email').value = op.email || '';
+      document.getElementById('reg-fecha-retiro').value = op.fechaRetiro || '';
+      document.getElementById('reg-hora-retiro').value = op.horaRetiro || '18:00';
+      document.getElementById('reg-fecha-evento').value = op.fechaEvento || '';
+      document.getElementById('reg-fecha-devolucion').value = op.fechaDevolucion || '';
+      document.getElementById('reg-hora-devolucion').value = op.horaDevolucion || '20:00';
+      document.getElementById('reg-accesorios').value = op.accesorios || 'Funda y percha original';
+      document.getElementById('reg-valor-reposicion').value = op.valorReposicion || '';
+      document.getElementById('reg-garantia').value = op.garantia || '';
+      document.getElementById('reg-multa-porcentaje').value = op.multaPorcentaje || 10;
+      document.getElementById('reg-observaciones').value = op.observaciones || '';
+
+      document.getElementById('tipo-ajuste').value = op.tipoAjuste || 'ninguno';
+      document.getElementById('valor-ajuste').value = op.valorAjuste || '';
+
+      const totalAbonado = (op.pagos || []).reduce((s, p) => s + p.monto, 0);
+      document.getElementById('monto-pago-inicial').value = totalAbonado > 0 ? totalAbonado : '';
+      if (op.pagos && op.pagos.length > 0) {
+        document.getElementById('medio-pago-inicial').value = op.pagos[0].medio || 'Efectivo';
+      }
+      if ((op.pagos || []).length > 1) {
+        document.getElementById('label-titulo-sena').innerText = 'Total Abonado Acumulado ($)';
+        document.getElementById('nota-edicion-pagos').classList.remove('hidden');
+      } else {
+        document.getElementById('label-titulo-sena').innerText = 'Seña / Pago Abonado ($)';
+        document.getElementById('nota-edicion-pagos').classList.add('hidden');
+      }
+
+      itemsOrdenActual = (op.items || []).map(item => ({ ...item }));
+      renderTablaOrden();
+      calcularTotales();
+      switchTab('registro');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.eliminarContrato = async function(opId) {
+      const op = dbOperaciones.find(o => o.id === opId);
+      if (!op) return;
+
+      const numeroContrato = op.id.toString().slice(-5);
+      if (!confirm(`¿Seguro que deseas eliminar el Contrato N.º ${numeroContrato} de ${op.clienta}?\n\nEsto borrará sus cobros de la caja y devolverá los vestidos al stock disponible.`)) {
+        return;
+      }
+
+      // Liberar los vestidos alquilados en el stock
+      (op.items || []).forEach(item => {
+        if (item.modalidad === 'Alquiler') {
+          const prod = dbProductos.find(p => p.id === item.id);
+          if (prod) prod.estadoLimpieza = 'Disponible / Limpio';
+        }
+      });
+
+      dbOperaciones = dbOperaciones.filter(o => o.id !== opId);
+      await guardarDB();
     };
 
     // --- GENERACIÓN DE CONTRATO OFICIAL VILMA WEDDINGS (PDF / WA / MAIL) ---
@@ -1098,15 +1234,15 @@
           <div class="clausula">
             <div class="clausula-titulo">OCTAVA: DEPÓSITO DE GARANTÍA</div>
             <div>La clienta entrega a Vilma Weddings la suma de <strong>$${garantia.toLocaleString()}</strong> en concepto de depósito de garantía reintegrable.</div>
-            <div>Este importe será devuelto dentro de las 72 horas hábiles posteriores a la restitución del vestido, una vez realizada su revisión.</div>
-            <div>En caso de detectarse daños extraordinarios imputables a la clienta o cargos por demora, Vilma Weddings podrá descontar de la garantía los importes debidamente justificados e informados. Si el importe de los daños acreditados supera la garantía, podrá reclamarse la diferencia correspondiente. Si no existen daños extraordinarios ni incumplimientos, la garantía será reintegrada en su totalidad.</div>
+            <div>Este importe será devuelto al momento en que la clienta entregue el vestido y se verifique el buen estado del mismo y de sus accesorios.</div>
+            <div>En caso de detectarse daños extraordinarios imputables a la clienta o cargos por demora, Vilma Weddings podrá descontar de la garantía los importes debidamente justificados e informados. Si el importe de los daños acreditados supera la garantía, podrá reclamarse la diferencia correspondiente. Si no existen daños extraordinarios ni incumplimientos, la garantía será reintegrada en su totalidad en el acto de devolución.</div>
           </div>
 
           <div class="clausula">
             <div class="clausula-titulo">NOVENA: CONTROL DEL ESTADO DEL VESTIDO</div>
             <div>Al momento de la entrega se realizará una revisión del vestido, dejando constancia de su estado general, accesorios y eventuales observaciones. Vilma Weddings podrá realizar fotografías del vestido al momento de la entrega y devolución, exclusivamente para documentar su estado.</div>
             <div><strong>Observaciones al entregar:</strong></div>
-            <div class="obs-box">${op.observaciones || 'Sin observaciones particulares. Prenda en óptimas condiciones.'}</div>
+            <div class="obs-box"></div>
             <div><strong>Observaciones al devolver:</strong></div>
             <div class="obs-box"></div>
           </div>
@@ -1169,7 +1305,7 @@
         `*CONDICIONES IMPORTANTES:*\n` +
         `1. La seña congela la fecha y *no tiene devolución*.\n` +
         `2. *No lavar, planchar, teñir ni coser* el vestido (la tintorería está incluida). Devolver en su funda y percha original.\n` +
-        `3. La garantía se reintegra dentro de las 72 hs hábiles posteriores a la devolución tras revisar la prenda.\n\n` +
+        `3. El depósito de garantía se devuelve en el momento en que entregas el vestido y se verifica su buen estado.\n\n` +
         `¡Muchas gracias por elegir *${CONFIG_LOCAL.nombre}*!`;
     }
 
@@ -1673,7 +1809,7 @@
               <span class="font-bold text-base text-purple-900">${op.clienta}</span> <span class="text-xs text-gray-500">(DNI: ${op.dni || 'S/D'} - Tel: ${op.telefono})</span>
               <p class="text-xs text-purple-800 mt-1"><strong>Retiro:</strong> ${formatearFechaAR(op.fechaRetiro)} (${op.horaRetiro || '18:00'} hs) | <strong>Devolución:</strong> ${formatearFechaAR(op.fechaDevolucion)} (${op.horaDevolucion || '20:00'} hs)</p>
               <p class="text-xs text-gray-600 mt-1"><strong>Prendas:</strong> ${op.items.map(i => i.nombre + ' [' + i.codigo + ']').join(', ')}</p>
-              ${op.observaciones ? `<p class="text-xs text-amber-800 bg-amber-50 p-2 rounded mt-2"><strong>Observaciones:</strong> ${op.observaciones}</p>` : ''}
+              ${op.observaciones ? `<p class="text-xs text-amber-900 bg-amber-100/80 border border-amber-300 p-2 rounded mt-2"><strong>🔒 Nota Privada:</strong> ${op.observaciones}</p>` : ''}
             </div>
             <div class="text-right flex flex-col justify-between">
               <div>
@@ -1727,13 +1863,18 @@
       itemsOrdenActual.push({ ...producto, precio: producto.modalidad === 'Venta' ? producto.precioVenta : producto.precioAlquiler });
       document.getElementById('buscar-codigo').value = '';
       
-      // Sugerir valor de reposición si está vacío
       const repInput = document.getElementById('reg-valor-reposicion');
       if (repInput && (parseFloat(repInput.value) || 0) === 0 && producto.precioVenta > 0) {
         repInput.value = producto.precioVenta;
       }
 
       renderTablaOrden();
+      calcularTotales();
+    };
+
+    window.actualizarPrecioItemOrden = function(idx, nuevoPrecio) {
+      const val = parseFloat(nuevoPrecio);
+      itemsOrdenActual[idx].precio = isNaN(val) ? 0 : val;
       calcularTotales();
     };
 
@@ -1760,15 +1901,17 @@
           <td class="p-2"><span class="px-2 py-0.5 rounded text-xs bg-purple-100 text-purple-800 font-semibold">${item.color || '-'}</span></td>
           <td class="p-2 text-xs text-gray-500">Talle ${item.talle || '-'} (B:${item.busto || '-'}, C:${item.cintura || '-'}, Cd:${item.cadera || '-'})</td>
           <td class="p-2"><span class="px-2 py-0.5 rounded text-xs font-bold ${item.modalidad === 'Venta' ? 'bg-red-100 text-red-800' : 'bg-purple-100 text-purple-800'}">${item.modalidad.toUpperCase()}</span></td>
-          <td class="p-2 font-bold">$${item.precio.toLocaleString()}</td>
-          <td class="p-2 text-center"><button onclick="removerItemOrden(${idx})" class="text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+          <td class="p-2">
+            <input type="number" value="${item.precio}" oninput="actualizarPrecioItemOrden(${idx}, this.value)" class="w-24 border border-gray-300 rounded p-1 text-xs font-bold text-gray-800">
+          </td>
+          <td class="p-2 text-center"><button onclick="removerItemOrden(${idx})" class="text-red-500 hover:text-red-700"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
         </tr>
       `).join('');
       lucide.createIcons();
     }
 
     window.calcularTotales = function() {
-      const subtotal = itemsOrdenActual.reduce((s, i) => s + i.precio, 0);
+      const subtotal = itemsOrdenActual.reduce((s, i) => s + (parseFloat(i.precio) || 0), 0);
       const tipo = document.getElementById('tipo-ajuste').value;
       const valor = parseFloat(document.getElementById('valor-ajuste').value) || 0;
       const inicial = parseFloat(document.getElementById('monto-pago-inicial').value) || 0;
@@ -1794,6 +1937,7 @@
     };
 
     window.guardarOperacion = async function() {
+      const editContratoIdStr = document.getElementById('edit-contrato-id').value;
       const clienta = document.getElementById('reg-clienta').value.trim();
       const dni = document.getElementById('reg-dni').value.trim();
       const telefono = document.getElementById('reg-telefono').value.trim();
@@ -1819,61 +1963,105 @@
         return alert('Completa Nombre, DNI, Teléfono, Fecha de Evento y selecciona al menos 1 producto.');
       }
 
-      const subtotal = itemsOrdenActual.reduce((s, i) => s + i.precio, 0);
-      const tipo = document.getElementById('tipo-ajuste').value;
-      const valor = parseFloat(document.getElementById('valor-ajuste').value) || 0;
+      const subtotal = itemsOrdenActual.reduce((s, i) => s + (parseFloat(i.precio) || 0), 0);
+      const tipoAjuste = document.getElementById('tipo-ajuste').value;
+      const valorAjuste = parseFloat(document.getElementById('valor-ajuste').value) || 0;
       let ajuste = 0;
-      if (tipo === 'descuento-monto') ajuste = -valor;
-      else if (tipo === 'descuento-porcentaje') ajuste = -(subtotal * (valor / 100));
-      else if (tipo === 'recargo-monto') ajuste = valor;
-      else if (tipo === 'recargo-porcentaje') ajuste = subtotal * (valor / 100);
+      if (tipoAjuste === 'descuento-monto') ajuste = -valorAjuste;
+      else if (tipoAjuste === 'descuento-porcentaje') ajuste = -(subtotal * (valorAjuste / 100));
+      else if (tipoAjuste === 'recargo-monto') ajuste = valorAjuste;
+      else if (tipoAjuste === 'recargo-porcentaje') ajuste = subtotal * (valorAjuste / 100);
 
       const total = Math.max(0, subtotal + ajuste);
+      let idParaPDF = null;
 
-      itemsOrdenActual.forEach(item => {
-        if (item.modalidad === 'Venta') {
-          dbProductos = dbProductos.filter(p => p.id !== item.id);
-        } else {
-          const p = dbProductos.find(prod => prod.id === item.id);
-          if (p) p.estadoLimpieza = 'Ingresó al Salón';
+      if (editContratoIdStr) {
+        // ACTUALIZAR CONTRATO EXISTENTE
+        const editId = parseInt(editContratoIdStr);
+        const idx = dbOperaciones.findIndex(o => o.id === editId);
+        if (idx !== -1) {
+          const opAnterior = dbOperaciones[idx];
+
+          // Liberar vestidos anteriores que ya no estén en la lista editada
+          (opAnterior.items || []).forEach(oldItem => {
+            if (oldItem.modalidad === 'Alquiler' && !itemsOrdenActual.some(ni => ni.id === oldItem.id)) {
+              const p = dbProductos.find(prod => prod.id === oldItem.id);
+              if (p) p.estadoLimpieza = 'Disponible / Limpio';
+            }
+          });
+
+          // Marcar los nuevos vestidos seleccionados
+          itemsOrdenActual.forEach(item => {
+            if (item.modalidad === 'Venta') {
+              dbProductos = dbProductos.filter(p => p.id !== item.id);
+            } else {
+              const p = dbProductos.find(prod => prod.id === item.id);
+              if (p) p.estadoLimpieza = 'Ingresó al Salón';
+            }
+          });
+
+          // Actualizar pagos si se modificó el monto inicial
+          let pagosActualizados = opAnterior.pagos ? [...opAnterior.pagos] : [];
+          const abonadoPrevio = pagosActualizados.reduce((s, p) => s + p.monto, 0);
+          if (inicial !== abonadoPrevio) {
+            if (inicial > 0) {
+              pagosActualizados = [{
+                fecha: pagosActualizados[0]?.fecha || new Date().toISOString().split('T')[0],
+                monto: inicial,
+                medio: medio,
+                facturado: false
+              }];
+            } else {
+              pagosActualizados = [];
+            }
+          }
+
+          dbOperaciones[idx] = {
+            ...opAnterior,
+            clienta, dni, telefono, domicilio, email,
+            fechaRetiro, horaRetiro, fechaEvento, fechaDevolucion, horaDevolucion,
+            accesorios, valorReposicion, garantia, multaPorcentaje, observaciones,
+            tipoAjuste, valorAjuste,
+            items: [...itemsOrdenActual],
+            total,
+            pagos: pagosActualizados
+          };
+          idParaPDF = editId;
         }
-      });
+      } else {
+        // CREAR NUEVO CONTRATO
+        itemsOrdenActual.forEach(item => {
+          if (item.modalidad === 'Venta') {
+            dbProductos = dbProductos.filter(p => p.id !== item.id);
+          } else {
+            const p = dbProductos.find(prod => prod.id === item.id);
+            if (p) p.estadoLimpieza = 'Ingresó al Salón';
+          }
+        });
 
-      const nuevaId = Date.now();
-      const nuevaOp = {
-        id: nuevaId, fechaRegistro: new Date().toLocaleDateString(),
-        clienta, dni, telefono, domicilio, email,
-        fechaRetiro, horaRetiro, fechaEvento, fechaDevolucion, horaDevolucion,
-        accesorios, valorReposicion, garantia, multaPorcentaje, observaciones,
-        items: [...itemsOrdenActual], total,
-        pagos: inicial > 0 ? [{ fecha: new Date().toISOString().split('T')[0], monto: inicial, medio, facturado: false }] : []
-      };
+        const nuevaId = Date.now();
+        const nuevaOp = {
+          id: nuevaId, fechaRegistro: new Date().toLocaleDateString(),
+          clienta, dni, telefono, domicilio, email,
+          fechaRetiro, horaRetiro, fechaEvento, fechaDevolucion, horaDevolucion,
+          accesorios, valorReposicion, garantia, multaPorcentaje, observaciones,
+          tipoAjuste, valorAjuste,
+          items: [...itemsOrdenActual], total,
+          pagos: inicial > 0 ? [{ fecha: new Date().toISOString().split('T')[0], monto: inicial, medio, facturado: false }] : []
+        };
 
-      dbOperaciones.push(nuevaOp);
+        dbOperaciones.push(nuevaOp);
+        idParaPDF = nuevaId;
+      }
+
       await guardarDB();
 
-      itemsOrdenActual = [];
-      document.getElementById('reg-clienta').value = '';
-      document.getElementById('reg-dni').value = '';
-      document.getElementById('reg-telefono').value = '';
-      document.getElementById('reg-domicilio').value = '';
-      document.getElementById('reg-email').value = '';
-      document.getElementById('reg-fecha-retiro').value = '';
-      document.getElementById('reg-fecha-evento').value = '';
-      document.getElementById('reg-fecha-devolucion').value = '';
-      document.getElementById('reg-accesorios').value = 'Funda y percha original';
-      document.getElementById('reg-valor-reposicion').value = 0;
-      document.getElementById('reg-garantia').value = 0;
-      document.getElementById('reg-observaciones').value = '';
-      document.getElementById('valor-ajuste').value = 0;
-      document.getElementById('monto-pago-inicial').value = 0;
-      
-      renderTablaOrden();
-      calcularTotales();
+      // Dejar formulario completamente en blanco para el próximo contrato
+      limpiarFormularioRegistro();
       switchTab('historial');
       
-      // Abrir automáticamente el Contrato PDF oficial
-      generarComprobantePDF(nuevaId);
+      // Abrir el Contrato PDF oficial
+      if (idParaPDF) generarComprobantePDF(idParaPDF);
     };
 
     window.renderHistorial = function() {
@@ -1887,7 +2075,11 @@
         return `
           <tr class="hover:bg-gray-50 border-b text-xs">
             <td class="p-3 font-bold text-purple-900">N.º ${op.id.toString().slice(-5)}<br><span class="text-gray-400 font-normal">${op.fechaRegistro}</span></td>
-            <td class="p-3 font-semibold text-sm">${op.clienta}<br><span class="text-xs font-normal text-gray-500">DNI: ${op.dni || 'S/D'} | Tel: ${op.telefono}</span></td>
+            <td class="p-3 font-semibold text-sm">
+              ${op.clienta}
+              <span class="block text-xs font-normal text-gray-500">DNI: ${op.dni || 'S/D'} | Tel: ${op.telefono}</span>
+              ${op.observaciones ? `<span class="block text-[10px] font-normal text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded mt-1">🔒 ${op.observaciones}</span>` : ''}
+            </td>
             <td class="p-3 text-xs">
               <div><strong class="text-gray-600">Retiro:</strong> ${formatearFechaAR(op.fechaRetiro)}</div>
               <div class="text-purple-900 font-bold">Evento: ${formatearFechaAR(op.fechaEvento)}</div>
@@ -1904,7 +2096,7 @@
             <td class="p-3 text-center">
               <div class="flex flex-wrap justify-center gap-1">
                 <button onclick="generarComprobantePDF(${op.id})" class="bg-purple-700 hover:bg-purple-800 text-white px-2.5 py-1.5 rounded text-[11px] font-semibold flex items-center gap-1" title="Imprimir o Guardar Contrato PDF">
-                  <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Contrato PDF
+                  <i data-lucide="file-text" class="w-3.5 h-3.5"></i> PDF
                 </button>
                 <button onclick="enviarPorWhatsApp(${op.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1.5 rounded text-[11px] font-semibold flex items-center gap-1" title="Enviar resumen por WhatsApp">
                   <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WA
@@ -1915,7 +2107,15 @@
               </div>
             </td>
             <td class="p-3 text-center">
-              ${saldo > 0 ? `<button onclick="abrirModalPago(${op.id})" class="bg-green-600 text-white px-2.5 py-1.5 rounded text-xs font-semibold hover:bg-green-700">Cobrar</button>` : '<span class="text-xs text-green-700 font-bold">✓</span>'}
+              <div class="flex items-center justify-center gap-1">
+                ${saldo > 0 ? `<button onclick="abrirModalPago(${op.id})" class="bg-green-600 text-white px-2 py-1.5 rounded text-[11px] font-semibold hover:bg-green-700" title="Cobrar Saldo">Cobrar</button>` : '<span class="text-xs text-green-700 font-bold px-1" title="Pagado">✓</span>'}
+                <button onclick="editarContrato(${op.id})" class="bg-amber-500 hover:bg-amber-600 text-white p-1.5 rounded text-xs" title="Modificar Contrato">
+                  <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                </button>
+                <button onclick="eliminarContrato(${op.id})" class="bg-red-600 hover:bg-red-700 text-white p-1.5 rounded text-xs" title="Eliminar Contrato">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
             </td>
           </tr>
         `;
